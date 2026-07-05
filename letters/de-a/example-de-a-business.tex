@@ -1,0 +1,20 @@
+% BEDIENVORSCHAU GESCHÄFTSMODUS
+% Öffentlicher Arbeitsablauf: eine Vorgabe, öffentliche Inhaltsbefehle und LetterBody.
+
+\UseLetterForm{A}
+\UsePreset{business-de}
+
+\UseRecipientAddressbook{generic-company}
+\SetLetterSubject{Beispiel für Form A im Modus: business}
+\SetLetterOpening{Anrede}
+\SetLetterClosing{Grußformel}
+
+\begin{LetterBody}
+
+\textbf{Was dieser Guide zeigt}
+
+Die visuelle Gliederung von \texttt{business-de} entsteht aus vier Elementen: Bildlogo, Kontaktangaben neben der Anschrift, Unternehmensfuß auf Seite eins und zurückhaltende schwarze Links. Die gemeinsame Logo-Einstellung steuert das Bild; Kontakt- und Fußdaten kommen aus \texttt{data/sender-data.tex}. Folgeseiten wechseln in die kompakte Fortsetzungsgestaltung.
+
+Beginne in \texttt{content.tex} mit Form-A-Auswahl, Empfänger und Betreff; der geschriebene Inhalt folgt in \texttt{LetterBody}. Ersetze vor der Nutzung sämtliche fiktiven und neutralisierten Demo-Daten. Das Ergebnis ist an DIN 5008 Form A orientiert, ohne eine DIN-Zertifizierung zu beanspruchen, und stellt kein reales Unternehmen dar.
+
+\end{LetterBody}

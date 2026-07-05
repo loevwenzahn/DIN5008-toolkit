@@ -1,0 +1,193 @@
+%---------------------------------------------------------------
+%                        Colors / Farben
+%---------------------------------------------------------------
+% Accent colors / Akzentfarben
+\definecolor{accentgreen}{HTML}{6F8A58}
+\definecolor{accentblue}{HTML}{3F6F9F}
+\definecolor{accentgray}{HTML}{6E7478}
+\definecolor{printaccent}{HTML}{555555}
+
+% Text, lines, and fold marks / Text, Linien und Falzmarken
+\definecolor{textdark}{HTML}{222222}
+\definecolor{textmid}{HTML}{666666}
+\definecolor{textlight}{HTML}{7B7B7B}
+\definecolor{linegray}{HTML}{D7D7D7}
+\definecolor{foldmarkgray}{HTML}{D3D7D1}
+
+% Green panel shades / Grüne Panelabstufungen
+\definecolor{panelgreenone}{HTML}{E8ECD9}
+\definecolor{panelgreentwo}{HTML}{DEE5C8}
+\definecolor{panelgreenthree}{HTML}{D4DDB6}
+\definecolor{panelgreenfour}{HTML}{CAD6A6}
+
+% Blue panel shades / Blaue Panelabstufungen
+\definecolor{panelblueone}{HTML}{E4EDF5}
+\definecolor{panelbluetwo}{HTML}{D7E4F0}
+\definecolor{panelbluethree}{HTML}{C9DBEA}
+\definecolor{panelbluefour}{HTML}{BBD2E4}
+
+% Gray panel shades / Graue Panelabstufungen
+\definecolor{panelgrayone}{HTML}{ECEDEC}
+\definecolor{panelgraytwo}{HTML}{E1E3E2}
+\definecolor{panelgraythree}{HTML}{D6D9D8}
+\definecolor{panelgrayfour}{HTML}{CACFCD}
+
+% Print panel shades / Panelabstufungen für den Druck
+\definecolor{panelprintone}{HTML}{E6E6E6}
+\definecolor{panelprinttwo}{HTML}{DCDCDC}
+\definecolor{panelprintthree}{HTML}{D2D2D2}
+\definecolor{panelprintfour}{HTML}{C8C8C8}
+
+% Neutral black/white preset / Neutrale Schwarz-Weiß-Vorgabe
+\definecolor{neutralblack}{HTML}{000000}
+\definecolor{neutralwhite}{HTML}{FFFFFF}
+
+% Draft markers / Entwurfsmarkierungen
+\definecolor{draftyellow}{HTML}{FFF4BF}
+\definecolor{draftorange}{HTML}{A05A00}
+
+%---------------------------------------------------------------
+%                 Color mode / Farbmodus
+%---------------------------------------------------------------
+% Maps the selected mode to active document colors / Ordnet dem gewählten Modus die aktiven Dokumentfarben zu
+\newcommand{\ApplyColorMode}{%
+  \ifdefstring{\ColorMode}{blue}{%
+    \colorlet{accent}{accentblue}
+    \colorlet{panelone}{panelblueone}
+    \colorlet{paneltwo}{panelbluetwo}
+    \colorlet{panelthree}{panelbluethree}
+    \colorlet{panelfour}{panelbluefour}
+    \colorlet{noticebackground}{panelblueone}
+    \colorlet{linkurlcolor}{accent}
+    \colorlet{linktextcolor}{accent}
+  }{%
+    \ifdefstring{\ColorMode}{gray}{%
+      \colorlet{accent}{accentgray}
+      \colorlet{panelone}{panelgrayone}
+      \colorlet{paneltwo}{panelgraytwo}
+      \colorlet{panelthree}{panelgraythree}
+      \colorlet{panelfour}{panelgrayfour}
+      \colorlet{noticebackground}{panelgrayone}
+      \colorlet{linkurlcolor}{accent}
+      \colorlet{linktextcolor}{accent}
+    }{%
+      \ifdefstring{\ColorMode}{black}{%
+        \colorlet{accent}{neutralblack}
+        \colorlet{panelone}{neutralwhite}
+        \colorlet{paneltwo}{neutralwhite}
+        \colorlet{panelthree}{neutralwhite}
+        \colorlet{panelfour}{neutralwhite}
+        \colorlet{noticebackground}{neutralwhite}
+        \colorlet{linkurlcolor}{neutralblack}
+        \colorlet{linktextcolor}{neutralblack}
+      }{%
+      \ifdefstring{\ColorMode}{print}{%
+        \colorlet{accent}{printaccent}
+        \colorlet{panelone}{panelprintone}
+        \colorlet{paneltwo}{panelprinttwo}
+        \colorlet{panelthree}{panelprintthree}
+        \colorlet{panelfour}{panelprintfour}
+        \colorlet{noticebackground}{panelprintone}
+        \colorlet{linkurlcolor}{textdark}
+        \colorlet{linktextcolor}{textdark}
+      }{%
+        \colorlet{accent}{accentgreen}
+        \colorlet{panelone}{panelgreenone}
+        \colorlet{paneltwo}{panelgreentwo}
+        \colorlet{panelthree}{panelgreenthree}
+        \colorlet{panelfour}{panelgreenfour}
+        \colorlet{noticebackground}{panelgreenone}
+        \colorlet{linkurlcolor}{accent}
+        \colorlet{linktextcolor}{accent}
+      }%
+      }%
+    }%
+  }%
+  \hypersetup{%
+    urlcolor=linkurlcolor,
+    linkcolor=linktextcolor,
+    citecolor=linktextcolor,
+    filecolor=linktextcolor
+  }%
+}
+
+% Apply default or selected mode / Standard- oder gewählten Modus anwenden
+\ApplyColorMode
+
+%---------------------------------------------------------------
+%          Public hexadecimal color overrides / Hex-Farben
+%---------------------------------------------------------------
+% Use exactly six hexadecimal characters without a leading #. Apply custom
+% colors after \UsePreset so the preset establishes the remaining roles first.
+% Genau sechs Hexadezimalzeichen ohne führendes # verwenden. Eigene Farben
+% nach \UsePreset setzen, damit die Vorgabe zuerst alle übrigen Rollen setzt.
+\ExplSyntaxOn
+\cs_new_protected:Npn \din_toolkit_set_html_color:nn #1#2
+  {
+    \regex_match:nnTF { \A [0-9A-Fa-f]{6} \Z } {#2}
+      { \definecolor{#1}{HTML}{#2} }
+      {
+        \PackageError{letter-template}{Invalid~hex~color~`#2'}
+          {In~content.tex,~use~exactly~six~hexadecimal~characters~without~a~leading~hash.}
+      }
+  }
+
+\cs_new_protected:Npn \din_toolkit_refresh_link_colors:
+  {
+    \hypersetup
+      {
+        urlcolor=linkurlcolor,
+        linkcolor=linktextcolor,
+        citecolor=linktextcolor,
+        filecolor=linktextcolor
+      }
+  }
+
+\NewDocumentCommand{\SetAccentColor}{m}
+  { \din_toolkit_set_html_color:nn {accent} {#1} }
+
+\NewDocumentCommand{\SetColorBlockOneColor}{m}
+  { \din_toolkit_set_html_color:nn {panelone} {#1} }
+\NewDocumentCommand{\SetColorBlockTwoColor}{m}
+  { \din_toolkit_set_html_color:nn {paneltwo} {#1} }
+\NewDocumentCommand{\SetColorBlockThreeColor}{m}
+  { \din_toolkit_set_html_color:nn {panelthree} {#1} }
+\NewDocumentCommand{\SetColorBlockFourColor}{m}
+  { \din_toolkit_set_html_color:nn {panelfour} {#1} }
+\NewDocumentCommand{\SetColorBlockColors}{m m m m}
+  {
+    \SetColorBlockOneColor{#1}
+    \SetColorBlockTwoColor{#2}
+    \SetColorBlockThreeColor{#3}
+    \SetColorBlockFourColor{#4}
+  }
+
+\NewDocumentCommand{\SetTextDarkColor}{m}
+  { \din_toolkit_set_html_color:nn {textdark} {#1} }
+\NewDocumentCommand{\SetTextMidColor}{m}
+  { \din_toolkit_set_html_color:nn {textmid} {#1} }
+\NewDocumentCommand{\SetTextLightColor}{m}
+  { \din_toolkit_set_html_color:nn {textlight} {#1} }
+\NewDocumentCommand{\SetLineColor}{m}
+  { \din_toolkit_set_html_color:nn {linegray} {#1} }
+\NewDocumentCommand{\SetFoldmarkColor}{m}
+  { \din_toolkit_set_html_color:nn {foldmarkgray} {#1} }
+\NewDocumentCommand{\SetNoticeBackgroundColor}{m}
+  { \din_toolkit_set_html_color:nn {noticebackground} {#1} }
+
+\NewDocumentCommand{\SetURLColor}{m}
+  {
+    \din_toolkit_set_html_color:nn {linkurlcolor} {#1}
+    \din_toolkit_refresh_link_colors:
+  }
+\NewDocumentCommand{\SetInternalLinkColor}{m}
+  {
+    \din_toolkit_set_html_color:nn {linktextcolor} {#1}
+    \din_toolkit_refresh_link_colors:
+  }
+\NewDocumentCommand{\SetLinkColors}{m m}
+  {
+    \SetURLColor{#1}
+    \SetInternalLinkColor{#2}
+  }
+\ExplSyntaxOff

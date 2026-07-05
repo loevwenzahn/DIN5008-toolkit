@@ -1,0 +1,53 @@
+%---------------------------------------------------------------
+%                 Sender data / Absenderdaten
+%---------------------------------------------------------------
+% Replace demo values; do not publish personal data / Beispieldaten ersetzen; keine persönlichen Daten veröffentlichen
+
+% [EDIT] Name and position / Name und Position
+\newcommand{\SenderName}{Max Mustermann}
+\newcommand{\SenderFirstName}{Max}
+\newcommand{\SenderLastName}{Mustermann}
+\newcommand{\SenderPosition}{Berufsbezeichnung}
+
+% [OPTIONAL] Authority reference block / Behörden-Referenzblock
+% Only relevant for the authority presets; skip otherwise / Nur für die Behörden-Vorgaben relevant, sonst überspringen
+% Neutral demo defaults; letter-specific \Ref... values take precedence / Neutrale Demo-Standardwerte; briefspezifische \Ref...-Werte haben Vorrang
+\newcommand{\AuthorityIhrZeichenLineOne}{Reference A}
+\newcommand{\AuthorityIhrZeichenLineTwo}{Reference A-2}
+\newcommand{\AuthorityIhreNachrichtVom}{01. Januar 2026}
+\newcommand{\AuthorityMeinZeichenLineOne}{Reference B}
+\newcommand{\AuthorityMeinZeichenLineTwo}{Reference B-2}
+\newcommand{\AuthorityKundennummer}{0000}
+\newcommand{\AuthorityBGNummer}{0000}
+\newcommand{\AuthorityDatum}{\today}
+
+% [OPTIONAL] Business information block / Informationsblock für Geschäftsbriefe
+% Only relevant for the business presets / Nur für die Business-Vorgaben relevant
+\newcommand{\SenderContactPerson}{Max Mustermann}
+\newcommand{\SenderDepartment}{Example Department}
+\newcommand{\SenderFax}{}
+\providecommand{\SenderRemark}{}
+% [ADVANCED] Business footer: edit only the text inside the four {...} groups.
+% Keep \BusinessFooterColumns and the four-brace structure intact.
+% [ADVANCED] Geschäftsfuß: nur den Text in den vier {...}-Gruppen ändern.
+% \BusinessFooterColumns und die Struktur der vier Klammern unverändert lassen.
+\newcommand{\BusinessLegalFooterText}{%
+\BusinessFooterColumns
+  {\textbf{Musterfirma GmbH}\\Musterstraße 1\\12345 Musterstadt}%
+  {Telefon: \SenderPhone\\E-Mail: \SenderEmail\\Internet: \SenderWebsiteText}%
+  {Example Department\\Reference A\\Reference B}%
+  {Geschäftsführung\\Max Mustermann}%
+}
+
+% [EDIT] Address and contact details / Anschrift und Kontaktdaten
+\newcommand{\SenderStreet}{Musterstraße 1}
+\newcommand{\SenderCity}{12345 Musterstadt}
+\newcommand{\SenderPhone}{+49 000 0000000}
+\newcommand{\SenderEmail}{max.mustermann@example.com}
+\newcommand{\SenderLinkedInUrl}{https://example.com/linkedin}
+\newcommand{\SenderWebsiteUrl}{https://example.com}
+\newcommand{\SenderWebsiteText}{example.com}
+
+% Place printed before the date, e.g. "Sample City, June 28, 2026"; leave empty for no place
+% Ort vor dem Datum, z. B. „Musterstadt, 28. Juni 2026“; für keinen Ort leer lassen
+\newcommand{\SenderPlace}{Musterstadt}

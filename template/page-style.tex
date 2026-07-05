@@ -1,0 +1,272 @@
+%=======================================================================
+%          INTERNAL PAGE RENDERING / INTERNES SEITEN-RENDERING
+%=======================================================================
+% Continuation headers, page numbers, first-page footers, and overlays.
+% Folgeseitenköpfe, Seitenzahlen, Erstseiten-Fußbereiche und Overlays.
+% Normal users configure presets in content.tex / Nutzer arbeiten in content.tex
+
+% SHARED VISUAL PRIMITIVE / GEMEINSAMER VISUELLER BAUSTEIN
+% Legacy Green... dimensions are color-neutral compatibility names.
+% Historische Green...-Maße sind farbneutrale Kompatibilitätsnamen.
+% Four-part color panel / Vierteiliges Farbpanel
+\newcommand{\ColorBlockBox}[1]{%
+  \begingroup
+  \leavevmode
+  \hbox to \GreenBlockWidth{%
+    {\color{panelone}\rule{5mm}{#1}}%
+    {\color{paneltwo}\rule{5mm}{#1}}%
+    {\color{panelthree}\rule{5mm}{#1}}%
+    {\color{panelfour}\rule{\dimexpr\GreenBlockWidth-15mm\relax}{#1}}%
+  }%
+  \endgroup
+}
+
+%---------------------------------------------------------------
+%       CONTINUATION HEADER / FOLGENSEITENKOPF
+%---------------------------------------------------------------
+% Sender and subject on continuation pages / Absender und Betreff auf Folgeseiten
+\newcommand{\ContinuationSubjectText}{%
+  \ifdefstring{\DocumentMode}{legal}{%
+    \begingroup
+    \def\\{\textcolor{linegray}{\,·\,}}%
+    \LetterSubject
+    \endgroup
+  }{\LetterSubject}%
+}
+
+\newcommand{\ContinuationHeaderText}{%
+  \SenderName
+  \textcolor{linegray}{\,·\,}
+  \ContinuationSubjectText
+}
+
+% Continuation header typography / Typografie des Folgeseitenkopfs
+\newcommand{\ContinuationHeader}{%
+  {\fontsize{\ContinuationHeaderSize}{\ContinuationHeaderLeading}\selectfont
+   \color{textlight}\ContinuationHeaderText}%
+}
+
+% Business, authority, and formal modes place continuation-page numbers here.
+% Business-, Behörden- und Formalmodus setzen Folgeseitenzahlen hier.
+\newcommand{\ContinuationHeaderLine}{%
+  \ifdefstring{\DocumentMode}{business}{%
+    \makebox[\textwidth][l]{\ContinuationHeader\hfill\FooterPageNumberContent}%
+  }{%
+    \ifdefstring{\DocumentMode}{authority}{%
+      \makebox[\textwidth][l]{\ContinuationHeader\hfill\FooterPageNumberContent}%
+    }{%
+      \ifdefstring{\DocumentMode}{legal}{%
+        \makebox[\textwidth][l]{\ContinuationHeader\hfill\FooterPageNumberContent}%
+      }{\ContinuationHeader}%
+    }%
+  }%
+}
+
+% Header from page two onward / Kopfbereich ab Seite zwei
+\newcommand{\ContinuationHeaderForPageStyle}{%
+  \ifUseContinuationHeader
+    \ifnum\value{page}>1
+      \parbox[b]{\textwidth}{%
+        \ContinuationHeaderLine\par
+        \vspace{3mm}%
+        {\color{linegray}\rule{\textwidth}{0.25pt}}%
+      }%
+    \fi
+  \fi
+}
+
+%---------------------------------------------------------------
+%          PAGE-NUMBER ROUTING / SEITENZAHLSTEUERUNG
+%---------------------------------------------------------------
+% \UseFooter controls page numbers; rich footers use separate mode switches.
+% \UseFooter steuert Seitenzahlen; umfangreiche Fußbereiche haben eigene Schalter.
+\newcommand{\FooterPageNumberContent}{%
+  {\normalfont\upshape\fontsize{\FooterPageSize}{\FooterPageLeading}\selectfont
+    \color{textlight}\PageNumberText}%
+}
+
+\newcommand{\FooterForPageStyle}{%
+  \ifUseFooter
+    \ifdefstring{\DocumentMode}{business}{}{%
+      \ifdefstring{\DocumentMode}{authority}{}{%
+        \ifdefstring{\DocumentMode}{legal}{}{\FooterPageNumberContent}%
+      }%
+    }%
+  \fi
+}
+
+% Shared page-number offset above rich footers / Gemeinsamer Seitenzahlversatz
+\newcommand{\RichFooterPageNumberRaise}{14.63mm}
+
+% Business page number above company disclosures / Geschäftsseitenzahl oberhalb der Unternehmensangaben
+\newcommand{\BusinessPageNumberForPageStyle}{%
+  \ifdefstring{\DocumentMode}{business}{%
+    \ifnum\value{page}=1
+      \ifUseFooter
+        \makebox[0pt][r]{\raisebox{\RichFooterPageNumberRaise}[0pt][0pt]{\FooterPageNumberContent}}%
+      \fi
+    \fi
+  }{}%
+}
+
+\newcommand{\BusinessFooterForPageStyle}{%
+  \BusinessLegalFooterForPageStyle
+  \BusinessPageNumberForPageStyle
+}
+
+%---------------------------------------------------------------
+%       RICH FIRST-PAGE FOOTERS / UMFANGREICHE ERSTSEITEN-FUSSBEREICHE
+%---------------------------------------------------------------
+% Business disclosures are independent of page numbering and decoration.
+% Unternehmensangaben sind unabhängig von Seitenzahl und Dekoration.
+\newcommand{\BusinessFooterColumn}[2]{%
+  \parbox[t]{#1}{\raggedright #2}%
+}
+
+\newcommand{\BusinessFooterColumns}[4]{%
+  \makebox[165mm][l]{%
+    \BusinessFooterColumn{36mm}{#1}%
+    \hfill
+    \BusinessFooterColumn{51mm}{#2}%
+    \hfill
+    \BusinessFooterColumn{40mm}{#3}%
+    \hfill
+    \BusinessFooterColumn{26mm}{#4}%
+  }%
+}
+
+% Shared visual frame for rich first-page footers / Gemeinsamer visueller Rahmen für umfangreiche Fußzeilen der ersten Seite
+\newcommand{\RichFirstPageFooterFrame}[1]{%
+  \raisebox{5.19mm}[0pt][0pt]{%
+    \parbox[b]{165mm}{%
+      \raggedright
+      \normalfont\upshape
+      \fontsize{7.5pt}{9pt}\selectfont
+      {\color{linegray}\rule{165mm}{0.3pt}}\par
+      \vspace{1.4mm}%
+      \color{textdark}#1%
+    }%
+  }%
+}
+
+\newcommand{\BusinessLegalFooterForPageStyle}{%
+  \ifUseBusinessLegalFooter
+    \ifdefstring{\DocumentMode}{business}{%
+      \ifnum\value{page}=1
+        \IfTextPresent{\BusinessLegalFooterText}{%
+          \RichFirstPageFooterFrame{\BusinessLegalFooterText}%
+        }{}%
+      \fi
+    }{}%
+  \fi
+}
+
+% Authority sender/contact footer, using the same column primitive and frame / Behörden-Absender-/Kontaktfuß mit demselben Spaltenelement und Rahmen
+\newcommand{\AuthorityFooterColumns}[3]{%
+  \makebox[165mm][l]{%
+    \BusinessFooterColumn{50mm}{#1}%
+    \hfill
+    \BusinessFooterColumn{50mm}{#2}%
+    \hfill
+    \BusinessFooterColumn{50mm}{#3}%
+  }%
+}
+
+\newcommand{\AuthoritySenderFooterText}{%
+  \AuthorityFooterColumns
+    {\textbf{\SenderName}\\\SenderStreet\\\SenderCity\\\strut}%
+    {\textbf{\LabelBusinessPhone}\\\SenderPhone\\%
+      \ifdefempty{\SenderFax}{\strut\\\strut}{\textbf{\LabelBusinessFax}\\\SenderFax}}%
+    {\textbf{\LabelBusinessEmail}\\\SenderEmail\\\strut\\\strut}%
+}
+
+% First-page number above the authority/legal sender footer / Seitenzahl der ersten Seite oberhalb des Behörden-/Legal-Absenderfußes
+\newcommand{\AuthorityLegalFirstPageNumber}{%
+  \ifUseFooter
+    \makebox[0pt][r]{\raisebox{\RichFooterPageNumberRaise}[0pt][0pt]{\FooterPageNumberContent}}%
+  \fi
+}
+
+\newcommand{\AuthorityLegalFirstPageFooter}{%
+  \ifnum\value{page}=1
+    \RichFirstPageFooterFrame{\AuthoritySenderFooterText}%
+    \AuthorityLegalFirstPageNumber
+  \fi
+}
+
+\newcommand{\AuthorityFooterForPageStyle}{%
+\ifdefstring{\DocumentMode}{authority}{%
+    \AuthorityLegalFirstPageFooter
+}{%
+  \ifdefstring{\DocumentMode}{legal}{%
+    \AuthorityLegalFirstPageFooter
+  }{}%
+}%
+}
+
+%---------------------------------------------------------------
+%          KOMA PAGE-STYLE BINDING / KOMA-SEITENSTILBINDUNG
+%---------------------------------------------------------------
+% Assign header and footer / Kopf und Fuß zuweisen
+\clearpairofpagestyles
+\ihead[]{\ContinuationHeaderForPageStyle}
+\ifoot[\FooterForPageStyle]{\FooterForPageStyle}
+\cfoot[]{}
+\ofoot[\BusinessFooterForPageStyle\AuthorityFooterForPageStyle]{\BusinessFooterForPageStyle\AuthorityFooterForPageStyle}
+\pagestyle{scrheadings}
+
+% Keep the page style active inside letters / Seitenstil in Briefen aktiv halten
+\AtBeginEnvironment{letter}{%
+  \pagestyle{scrheadings}%
+  \thispagestyle{plain.scrheadings}%
+}
+\apptocmd{\opening}{\pagestyle{scrheadings}\thispagestyle{plain.scrheadings}}{}{}
+
+%---------------------------------------------------------------
+%              SHIPOUT OVERLAY / SHIPOUT-OVERLAY
+%---------------------------------------------------------------
+% Fold marks and optional color panels / Falzmarken und optionale Farbpaneele
+% Top/bottom marks are profile-driven; the verified 148.5 mm punch mark and
+% horizontal positions are shared / Oben/unten profilabhängig; Lochmarke
+% bei 148,5 mm und horizontale Positionen gemeinsam
+\AddToHook{shipout/foreground}{%
+  \begin{tikzpicture}[remember picture,overlay]
+    \ifUseFoldmarks
+      \draw[foldmarkgray,line width=0.25pt]
+        ([xshift=5mm,yshift=-\LetterFormFoldTop]current page.north west) --
+        ([xshift=9mm,yshift=-\LetterFormFoldTop]current page.north west);
+      \draw[foldmarkgray,line width=0.25pt]
+        ([xshift=5mm,yshift=-148.5mm]current page.north west) --
+        ([xshift=8.2mm,yshift=-148.5mm]current page.north west);
+      \draw[foldmarkgray,line width=0.25pt]
+        ([xshift=5mm,yshift=-\LetterFormFoldBottom]current page.north west) --
+        ([xshift=9mm,yshift=-\LetterFormFoldBottom]current page.north west);
+    \fi
+
+    % Business uses its image header / Business nutzt seinen Bildbriefkopf
+    \ifUseHeaderColorBlock
+    \IfColorBlockHeaderTF{%
+      \ifdefstring{\DocumentMode}{business}{}{%
+        \ifnum\value{page}=1
+          \node[anchor=north east,inner sep=0pt,outer sep=0pt]
+            at ([xshift=-\GreenBlockRightInset,yshift=-\GreenHeaderTop]current page.north east)
+            {\ColorBlockBox{\GreenHeaderHeight}};
+        \fi
+      }%
+    }{}%
+    \fi
+
+    % Rich business/authority/formal footers suppress this panel / Kein Panel bei umfangreichen Fußbereichen
+    \ifUseFooterColorBlock
+      \ifdefstring{\DocumentMode}{business}{}{%
+        \ifdefstring{\DocumentMode}{authority}{}{%
+          \ifdefstring{\DocumentMode}{legal}{}{%
+            \node[anchor=south east,inner sep=0pt,outer sep=0pt]
+              at ([xshift=-\GreenBlockRightInset,yshift=\GreenFooterBottom]current page.south east)
+              {\ColorBlockBox{\GreenFooterHeight}};
+          }%
+        }%
+      }%
+    \fi
+  \end{tikzpicture}%
+}

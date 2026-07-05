@@ -1,0 +1,98 @@
+%---------------------------------------------------------------
+%                Addressbook / Adressbuch
+%---------------------------------------------------------------
+% Neutral demo recipients and reusable address book entries
+% Beispielempfänger und wiederverwendbare Adressbucheinträge
+%
+% Manual mode / Manueller Modus:
+%   \UseRecipientManual + \SetManualRecipient{...} in content.tex
+%  
+% Addressbook mode / Adressbuch-Modus: 
+%   \UseRecipientAddressbook{<key>} in content.tex
+%
+% [EDIT] Add your own reusable recipient with one line / Wiederverwendbaren Empfänger mit einer Zeile ergänzen:
+%   \DefineRecipient{my-key}{Name\\Street\\City}
+%
+% Then select it in content.tex with / In content.tex auswählen
+%   \UseRecipientAddressbook{my-key}.
+%
+% An unknown key shows a visible notice in the PDF. / Ein unbek. Key erzeugt einen sichtbaren Hinweis im PDF.
+%
+% Default recipient for manual mode, used if no other recipient is set / Standardempfänger für den manuellen Modus:
+\newcommand{\RecipientBlock}{%
+Empfänger GmbH\\
+Kundenservice\\
+Musterstraße 1\\
+12345 Musterstadt
+}
+
+% Reusable address book entries / Wiederverwendbare Adressbucheinträge
+\DefineRecipient{generic-company}{%
+Beispielunternehmen GmbH\\
+Allgemeine Korrespondenz\\
+Musterstraße 1\\
+12345 Musterstadt
+}
+
+\DefineRecipient{hr-department}{%
+Beispielunternehmen GmbH\\
+Personalabteilung\\
+Musterstraße 2\\
+12345 Musterstadt
+}
+
+\DefineRecipient{university-office}{%
+Musteruniversität\\
+Akademisches Prüfungsamt\\
+Campusstraße 1\\
+12345 Musterstadt
+}
+
+\DefineRecipient{tax-office}{%
+Finanzamt Musterstadt\\
+Allgemeine Auskunft\\
+Behördenstraße 1\\
+12345 Musterstadt
+}
+
+\DefineRecipient{employment-agency}{%
+Agentur für Arbeit Musterstadt\\
+Allgemeine Auskunft\\
+Musterweg 3\\
+12345 Musterstadt
+}
+
+\DefineRecipient{health-insurance}{%
+Muster Krankenkasse\\
+Mitgliederservice\\
+Musterstraße 4\\
+12345 Musterstadt
+}
+
+\DefineRecipient{insurance-company}{%
+Muster Versicherung AG\\
+Kundenservice\\
+Musterstraße 5\\
+12345 Musterstadt
+}
+
+\DefineRecipient{municipal-office}{%
+Stadtverwaltung Musterstadt\\
+Bürgerdienste\\
+Rathausstraße 1\\
+12345 Musterstadt
+}
+
+\DefineRecipient{customer-service}{%
+Muster Service GmbH\\
+Kundenservice\\
+Musterstraße 6\\
+12345 Musterstadt
+}
+
+\DefineRecipient{landlord}{%
+Muster Hausverwaltung GmbH\\
+Kundenservice\\
+Musterstraße 7\\
+12345 Musterstadt
+}

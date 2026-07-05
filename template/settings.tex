@@ -1,0 +1,389 @@
+%=======================================================================
+%              INTERNAL SETTINGS / INTERNE EINSTELLUNGEN
+%=======================================================================
+% Normal users edit content.tex, not this file.
+% Normale Nutzer bearbeiten content.tex, nicht diese Datei.
+%
+% PUBLIC API / ÖFFENTLICHE SCHNITTSTELLE:
+%   \UseLetterForm, \UsePreset, recipient/content setters, attachment
+%   setters, color setters, and the documented optional switches.
+%   \UseLetterForm, \UsePreset, Empfänger-/Inhaltsbefehle, Anlagenbefehle,
+%   Farbbefehle und die dokumentierten optionalen Schalter.
+%
+% INTERNAL / INTERN:
+%   Profile defaults, preset base commands, mode setters, compatibility
+%   state, and mode-controlled switches.
+%   Profilwerte, Preset-Bausteine, Modussetter, Kompatibilitätszustand
+%   und modusgesteuerte Schalter.
+%=======================================================================
+
+%-----------------------------------------------------------------------
+% PUBLIC: LETTER FORM SELECTION / ÖFFENTLICH: BRIEFFORMAUSWAHL
+% Form B is the technical fallback. Form profiles apply their calibrated
+% values when a letter starts.
+% Form B ist der technische Rückfallwert. Beim Briefstart setzt das
+% Formprofil seine kalibrierten Werte.
+%-----------------------------------------------------------------------
+
+% INTERNAL: current document mode; selected through \UsePreset.
+% INTERN: aktueller Dokumentmodus; Auswahl erfolgt über \UsePreset.
+\newcommand{\DocumentMode}{application}
+\newcommand{\LetterForm}{B}
+\newcommand{\UseLetterForm}[1]{%
+  \ifstrequal{#1}{A}{\renewcommand{\LetterForm}{A}}{%
+    \ifstrequal{#1}{B}{\renewcommand{\LetterForm}{B}}{%
+      \PackageError{letter-template}{Unknown letter form '#1'}%
+        {In content.tex, use \string\UseLetterForm\{A\} or \string\UseLetterForm\{B\}.}%
+    }%
+  }%
+}
+
+%-----------------------------------------------------------------------
+% INTERNAL: FORM B FALLBACK VALUES / INTERN: FORM-B-RÜCKFALLWERTE
+% form-a.tex or form-b.tex replaces these values for the active letter.
+% form-a.tex oder form-b.tex ersetzt diese Werte für den aktiven Brief.
+% Do not use these commands as a second geometry configuration surface.
+% Diese Befehle sind keine zweite Oberfläche zur Geometriekonfiguration.
+%-----------------------------------------------------------------------
+
+\newcommand{\LetterFormFoldTop}{105mm}
+\newcommand{\LetterFormFoldBottom}{210mm}
+\newcommand{\LetterFormFirstHeadVPos}{14mm}
+\newcommand{\LetterFormToAddrVPos}{45mm}
+\newcommand{\LetterFormDefaultLocVPos}{50mm}
+\newcommand{\LetterFormHeaderTop}{14mm}
+\newcommand{\LetterFormHeaderHeight}{24mm}
+\newcommand{\LetterFormLogoHeight}{25mm}
+\newcommand{\LetterFormMonogramSize}{10pt}
+\newcommand{\LetterFormBusinessLogoX}{125mm}
+\newcommand{\LetterFormBusinessLogoTop}{14mm}
+
+%-----------------------------------------------------------------------
+% PUBLIC: USER LOGO / ÖFFENTLICH: NUTZERLOGO
+% logo.png remains the default. \SetHeaderLogoFile accepts a relative
+% project path. / logo.png bleibt Standard. \SetHeaderLogoFile akzeptiert
+% einen relativen Projektpfad.
+%-----------------------------------------------------------------------
+
+\newcommand{\LetterFormTestLogoFile}{assets/test-branding/form-b-01.png}
+\newcommand{\HeaderLogoFile}{logo.png}
+\newcommand{\SetHeaderLogoFile}[1]{\renewcommand{\HeaderLogoFile}{#1}}
+
+% MAINTAINERS ONLY: select the logo supplied by the active form profile.
+% NUR FÜR MAINTAINER: Logo des aktiven Formprofils für Guides/Tests wählen.
+\newcommand{\UseFormTestBranding}{\renewcommand{\HeaderLogoFile}{\LetterFormTestLogoFile}}
+
+% INTERNAL: mode-specific profile positions / INTERN: modusspezifische Profilpositionen
+\newcommand{\LetterFormBusinessLocWithBack}{54.5mm}
+\newcommand{\LetterFormBusinessLocWithoutBack}{64.5mm}
+\newcommand{\LetterFormAuthorityLoc}{54.5mm}
+\newcommand{\LetterFormLegalLoc}{55mm}
+\newcommand{\LetterFormStandardRefVPos}{92.07mm}
+\newcommand{\LetterFormLegalRefVPos}{90.97mm}
+
+%-----------------------------------------------------------------------
+% INTERNAL STATE DEFAULTS / INTERNE ZUSTANDS-STANDARDWERTE
+% Presets replace these coherent defaults before optional user overrides.
+% Presets ersetzen diese Werte vor optionalen Nutzer-Overrides.
+%-----------------------------------------------------------------------
+
+% Color mode / Farbmodus: green, blue, gray, print, black
+\newcommand{\ColorMode}{green}
+
+% Attachment mode: auto, custom, or none / Anlagenmodus: auto, custom oder none
+\newcommand{\AttachmentMode}{auto}
+
+% Attachment set selected by the document mode / Durch den Dokumentmodus gewählter Anlagensatz
+\newcommand{\AttachmentPreset}{application}
+
+% Recipient mode: manual or addressbook / Empfängermodus: manual oder addressbook
+\newcommand{\RecipientMode}{manual}
+
+% Default address book key / Standard-Adressbuchschlüssel
+\newcommand{\RecipientKey}{generic-company}
+
+% PUBLIC: draft review state / ÖFFENTLICH: Entwurfsprüfung
+\newif\ifDraftMode
+\DraftModefalse
+
+% PUBLIC: demo-data reminder when draft mode is off / ÖFFENTLICH: Demo-Daten-Hinweis bei ausgeschaltetem Entwurfsmodus
+% Set \CheckDemoDatafalse to silence the reminder / Mit \CheckDemoDatafalse abschalten
+\newif\ifCheckDemoData
+\CheckDemoDatatrue
+
+% INTERNAL COMPATIBILITY: notices follow \DraftMode in the letter flow.
+% INTERNE KOMPATIBILITÄT: Hinweise folgen \DraftMode im Brieffluss.
+\newif\ifUseDraftNotice
+\UseDraftNoticefalse
+
+% INTERNAL: presets select the header variant / INTERN: Presets wählen die Briefkopfvariante
+% Values / Werte: image, colorblock, monogram, tikz
+\newcommand{\HeaderVariant}{colorblock}
+
+% Decorative header color block / Dekorativer Farbblock im Briefkopf
+\newif\ifUseHeaderColorBlock
+\UseHeaderColorBlocktrue
+
+% Decorative footer color block / Dekorativer Farbblock in der Fußzeile
+\newif\ifUseFooterColorBlock
+\UseFooterColorBlocktrue
+
+% Optional business legal footer / Optionale gesellschaftsrechtliche Fußzeile
+\newif\ifUseBusinessLegalFooter
+\UseBusinessLegalFooterfalse
+
+% Optional return address line above the recipient / Optionale Rücksendezeile über dem Empfänger
+\newif\ifUseBackaddress
+\UseBackaddresstrue
+
+% Optional logo or monogram in the letterhead / Optionales Logo oder Monogramm im Briefkopf
+\newif\ifUseHeaderLogo
+\UseHeaderLogotrue
+
+%=======================================================================
+%                 COMMAND API / BEFEHLSSCHNITTSTELLE
+%=======================================================================
+
+%-----------------------------------------------------------------------
+% INTERNAL PRESET BUILDING BLOCKS / INTERNE PRESET-BAUSTEINE
+% Users select \UsePreset instead of calling \SetMode... directly.
+% Nutzer wählen \UsePreset und rufen \SetMode... nicht direkt auf.
+%-----------------------------------------------------------------------
+
+% Document modes / Dokumentmodi
+\newcommand{\SetModeApplication}{\renewcommand{\DocumentMode}{application}\ApplyDocumentMode}
+\newcommand{\SetModeAuthority}{\renewcommand{\DocumentMode}{authority}\ApplyDocumentMode}
+\newcommand{\SetModeLegal}{\renewcommand{\DocumentMode}{legal}\ApplyDocumentMode}
+\newcommand{\SetModeBusiness}{\renewcommand{\DocumentMode}{business}\ApplyDocumentMode}
+\newcommand{\SetModeMinimal}{\renewcommand{\DocumentMode}{minimal}\ApplyDocumentMode}
+
+% INTERNAL language bundles / INTERNE Sprachpakete
+\newcommand{\SetLanguageGerman}{%
+\LanguageEnglishfalse
+\selectlanguage{ngerman}%
+\renewcommand{\LetterOpening}{Sehr geehrte Damen und Herren,}%
+\renewcommand{\LetterClosing}{Mit freundlichen Grüßen}%
+}
+
+% English language for a DIN 5008-oriented layout / Englisch für ein DIN-5008-orientiertes Layout
+\newcommand{\SetLanguageEnglish}{%
+\LanguageEnglishtrue
+\selectlanguage{english}%
+\renewcommand{\LetterOpening}{Dear Sir or Madam,}%
+\renewcommand{\LetterClosing}{Sincerely}%
+}
+
+% ADVANCED PUBLIC: color overrides / ERWEITERT ÖFFENTLICH: Farb-Overrides
+\newcommand{\SetColorGreen}{\renewcommand{\ColorMode}{green}\ApplyColorMode}
+\newcommand{\SetColorBlue}{\renewcommand{\ColorMode}{blue}\ApplyColorMode}
+\newcommand{\SetColorGray}{\renewcommand{\ColorMode}{gray}\ApplyColorMode}
+\newcommand{\SetColorPrint}{\renewcommand{\ColorMode}{print}\ApplyColorMode}
+\newcommand{\SetColorBlack}{\renewcommand{\ColorMode}{black}\ApplyColorMode}
+
+% PUBLIC: attachments / ÖFFENTLICH: Anlagen
+\newcommand{\SetAttachmentsAuto}{\renewcommand{\AttachmentMode}{auto}}
+\newcommand{\SetAttachmentsNone}{\renewcommand{\AttachmentMode}{none}}
+
+% Custom attachments; separate entries with \\ / Eigene Anlagen; Einträge mit \\ trennen
+\newcommand{\SetAttachmentsCustom}[1]{%
+\renewcommand{\AttachmentMode}{custom}%
+\renewcommand{\CustomAttachments}{#1}%
+}
+
+% PUBLIC: recipient selection / ÖFFENTLICH: Empfängerauswahl
+\newcommand{\UseRecipientManual}{\renewcommand{\RecipientMode}{manual}}
+
+% Address book recipient, e.g. hr-department / Adressbuchempfänger, z. B. hr-department
+\newcommand{\UseRecipientAddressbook}[1]{%
+\renewcommand{\RecipientMode}{addressbook}%
+\renewcommand{\RecipientKey}{#1}%
+}
+
+% Recipient used in manual mode / Im manuellen Modus verwendeter Empfänger
+\newcommand{\SetManualRecipient}[1]{\renewcommand{\RecipientBlock}{#1}}
+
+% PUBLIC: register a reusable address book recipient / ÖFFENTLICH: wiederverwendbaren Adressbuchempfänger anlegen
+% Usage in data/addressbook.tex / Nutzung in data/addressbook.tex:
+%   \DefineRecipient{my-key}{Name\\Street\\City}
+% Then select it in content.tex / Danach in content.tex auswählen:
+%   \UseRecipientAddressbook{my-key}
+\newcommand{\DefineRecipient}[2]{\csdef{recipient@#1}{#2}}
+
+% INTERNAL: resolve the active key, or show the visible unknown-key notice
+% INTERN: aktiven Schlüssel auflösen oder sichtbaren Fehlerblock zeigen
+\newcommand{\AddressbookRecipientBlock}{%
+\ifcsdef{recipient@\RecipientKey}{\csuse{recipient@\RecipientKey}}{\UnknownRecipientBlock}%
+}
+
+% INTERNAL: manual block or resolved address book block
+% INTERN: manueller Block oder aufgelöster Adressbuchblock
+\newcommand{\ResolvedRecipientBlock}{%
+\ifdefstring{\RecipientMode}{addressbook}{\AddressbookRecipientBlock}{\RecipientBlock}%
+}
+
+% INTERNAL: visible notice for an unknown key; colors resolve at build time
+% INTERN: sichtbarer Hinweis bei unbekanntem Schlüssel; Farben werden beim Bau aufgelöst
+\newcommand{\UnknownRecipientBlock}{%
+\begingroup
+\setlength{\fboxsep}{3pt}%
+\colorbox{draftyellow}{%
+\textcolor{draftorange}{%
+\textbf{UNBEKANNTER EMPFÄNGER-SCHLÜSSEL: \RecipientKey}%
+}%
+}%
+\endgroup
+\PackageWarning{letter-template}{Unknown recipient key: \RecipientKey}%
+}
+
+% PUBLIC: subject, salutation, and closing / ÖFFENTLICH: Betreff, Anrede und Gruß
+\newcommand{\SetLetterSubject}[1]{%
+\renewcommand{\LetterSubject}{#1}%
+\setkomavar{subject}{\ResolvedSubjectContent}%
+}
+
+% Custom opening and closing / Eigene Anrede und Grußformel
+\newcommand{\SetLetterOpening}[1]{\renewcommand{\LetterOpening}{#1}}
+\newcommand{\SetLetterClosing}[1]{\renewcommand{\LetterClosing}{#1}}
+
+% PUBLIC OPTIONAL: Authority and formal reference fields
+% ÖFFENTLICH OPTIONAL: Behörden- und formale Referenzfelder
+\newcommand{\SetRefIhrZeichen}[1]{\renewcommand{\RefIhrZeichen}{#1}}
+\newcommand{\SetRefIhreNachrichtVom}[1]{\renewcommand{\RefIhreNachrichtVom}{#1}}
+\newcommand{\SetRefMeinZeichen}[1]{\renewcommand{\RefMeinZeichen}{#1}}
+\newcommand{\SetRefAktenzeichen}[1]{\renewcommand{\RefAktenzeichen}{#1}}
+\newcommand{\SetRefBGNummer}[1]{\renewcommand{\RefBGNummer}{#1}}
+\newcommand{\SetRefKundennummer}[1]{\renewcommand{\RefKundennummer}{#1}}
+\newcommand{\SetRefIhrSchreibenVom}[1]{\renewcommand{\RefIhrSchreibenVom}{#1}}
+\newcommand{\SetRefGeschaeftszeichen}[1]{\renewcommand{\RefGeschaeftszeichen}{#1}}
+\newcommand{\SetRefBearbeitung}[1]{\renewcommand{\RefBearbeitung}{#1}}
+
+% PUBLIC OPTIONAL: formal number and matter fields
+% ÖFFENTLICH OPTIONAL: formale Nummern- und Sachverhaltsfelder
+\newcommand{\SetLegalGeschaeftsnummer}[1]{\renewcommand{\LegalGeschaeftsnummer}{#1}}
+\newcommand{\SetLegalSachverhalt}[1]{\renewcommand{\LegalSachverhalt}{#1}}
+
+%=======================================================================
+%             CURATED PRESETS / KURATIERTE VORGABEN
+%=======================================================================
+% One preset selects a coherent language, mode, color, font, header, and
+% attachment setup. Optional overrides may be applied afterwards.
+% Eine Vorgabe wählt Sprache, Modus, Farbe, Schrift, Briefkopf und Anlagen
+% als stimmige Einheit. Optionale Overrides können danach folgen.
+
+% INTERNAL: complete, explicit preset definitions. Their repetition is
+% intentional so each preset remains independently auditable.
+% INTERN: vollständige, ausdrückliche Definitionen. Die Wiederholung ist
+% beabsichtigt, damit jedes Preset unabhängig geprüft werden kann.
+
+\newcommand{\PresetApplicationBase}{%
+  \SetModeApplication
+  \SetColorGreen
+  \SetFontSansHeros
+  \renewcommand{\HeaderVariant}{colorblock}%
+  \UseHeaderColorBlocktrue
+  \UseFooterColorBlocktrue
+  \UseBackaddressfalse
+  \UseHeaderLogotrue
+  \SetAttachmentsAuto
+  \DraftModefalse
+  \UseDraftNoticefalse
+}
+
+\newcommand{\PresetBusinessBase}{%
+  \SetModeBusiness
+  \SetColorBlack
+  \SetFontSansHeros
+  \renewcommand{\HeaderVariant}{image}%
+  \UseHeaderColorBlocktrue
+  \UseFooterColorBlockfalse
+  \UseBackaddresstrue
+  \UseHeaderLogotrue
+  \SetAttachmentsNone
+  \DraftModefalse
+  \UseDraftNoticefalse
+}
+
+\newcommand{\PresetAuthorityBase}{%
+  \SetModeAuthority
+  \SetColorGreen
+  \SetFontSansHeros
+  \renewcommand{\HeaderVariant}{colorblock}%
+  \UseHeaderColorBlocktrue
+  \UseFooterColorBlockfalse
+  \UseBackaddresstrue
+  \UseHeaderLogotrue
+  \SetAttachmentsAuto
+  \DraftModefalse
+  \UseDraftNoticefalse
+}
+
+\newcommand{\PresetLegalBase}{%
+  \SetModeLegal
+  \SetColorBlack
+  \SetFontSansHeros
+  \renewcommand{\HeaderVariant}{colorblock}%
+  \UseHeaderColorBlocktrue
+  \UseFooterColorBlockfalse
+  \UseBackaddresstrue
+  \UseHeaderLogotrue
+  \SetAttachmentsAuto
+  \DraftModefalse
+  \UseDraftNoticefalse
+}
+
+\newcommand{\PresetMinimalBase}{%
+  \SetModeMinimal
+  \SetColorBlack
+  \SetFontSansHeros
+  \renewcommand{\HeaderVariant}{monogram}%
+  \UseHeaderColorBlockfalse
+  \UseFooterColorBlockfalse
+  \UseBackaddressfalse
+  \UseHeaderLogotrue
+  \SetAttachmentsNone
+  \DraftModefalse
+  \UseDraftNoticefalse
+}
+
+% PUBLIC: preset dispatcher / ÖFFENTLICH: Preset-Auswahl
+% Example / Beispiel: \UsePreset{business-de}
+\newcommand{\UsePreset}[1]{%
+  \ifstrequal{#1}{application-de}{\SetLanguageGerman\PresetApplicationBase}{%
+  \ifstrequal{#1}{application-en}{\SetLanguageEnglish\PresetApplicationBase}{%
+  \ifstrequal{#1}{business-de}{\SetLanguageGerman\PresetBusinessBase}{%
+  \ifstrequal{#1}{business-en}{\SetLanguageEnglish\PresetBusinessBase}{%
+  \ifstrequal{#1}{authority-de}{\SetLanguageGerman\PresetAuthorityBase}{%
+  \ifstrequal{#1}{authority-en}{\SetLanguageEnglish\PresetAuthorityBase}{%
+  \ifstrequal{#1}{legal-de}{\SetLanguageGerman\PresetLegalBase}{%
+  \ifstrequal{#1}{legal-en}{\SetLanguageEnglish\PresetLegalBase}{%
+  \ifstrequal{#1}{minimal-de}{\SetLanguageGerman\PresetMinimalBase}{%
+  \ifstrequal{#1}{minimal-en}{\SetLanguageEnglish\PresetMinimalBase}{%
+    \PackageError{letter-template}{Unknown preset '#1'}%
+      {Choose one documented preset in content.tex, for example \string\UsePreset\{business-de\}.}%
+  }}}}}}}}}}%
+}
+
+%=======================================================================
+%          INTERNAL MODE SWITCHES / INTERNE MODUSSCHALTER
+%=======================================================================
+% These switches are initialized by modes.tex and curated presets. Some are
+% documented as optional overrides in content.tex; they are not independent
+% document modes.
+% Diese Schalter werden durch modes.tex und Presets gesetzt. Einige sind in
+% content.tex als optionale Overrides dokumentiert; sie sind keine eigenen Modi.
+\newif\ifUseFoldmarks
+\newif\ifUseFooter
+\newif\ifUsePageTotal
+\newif\ifUseContinuationHeader
+\newif\ifUseGradientPanel
+\newif\ifUseLogo
+\newif\ifUseIcons
+\newif\ifUsePosition
+\newif\ifUseLinkedIn
+\newif\ifUseWebsite
+\newif\ifUseAttachments
+\newif\ifUseReferenceBlock
+
+% German by default / Deutsch als Standardsprache
+\newif\ifLanguageEnglish
+\LanguageEnglishfalse

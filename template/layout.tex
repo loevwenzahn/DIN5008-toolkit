@@ -1,0 +1,103 @@
+%=======================================================================
+%             INTERNAL SHARED LAYOUT / INTERNES GEMEINSAMES LAYOUT
+%=======================================================================
+% Shared type area, overlays, and DIN 5008-oriented letter elements.
+% Gemeinsamer Satzspiegel, Overlays und DIN-5008-orientierte Briefelemente.
+% Form-specific vertical values are applied by form-a.tex or form-b.tex.
+% Formularabhängige Vertikalwerte setzen form-a.tex oder form-b.tex.
+
+% Overlay dimensions; legacy Green... names are color-neutral.
+% Overlay-Maße; historische Green...-Namen sind farbneutral.
+\newlength{\GreenBlockWidth}
+\newlength{\GreenHeaderHeight}
+\newlength{\GreenFooterHeight}
+\newlength{\GreenBlockRightInset}
+\newlength{\GreenHeaderTop}
+\newlength{\GreenFooterBottom}
+
+% Shared reserved page areas / Gemeinsame reservierte Seitenbereiche
+\newlength{\ContinuationHeaderTop}
+\newlength{\BodyTopMargin}
+\newlength{\BodyBottomMargin}
+\newlength{\FooterReservedHeight}
+\newlength{\FooterBaselineFromBottom}
+\newlength{\ContinuationHeaderReservedHeight}
+\newlength{\ContinuationHeaderBoxHeight}
+
+% Overlay values: top and height are initialized from the form fallback and
+% refreshed when a letter starts. / Overlaywerte: Oberkante und Höhe stammen
+% zunächst aus dem Form-Fallback und werden beim Briefstart aktualisiert.
+\setlength{\GreenBlockWidth}{32mm}
+\setlength{\GreenHeaderHeight}{\LetterFormHeaderHeight}
+\setlength{\GreenFooterHeight}{4.2mm}
+\setlength{\GreenBlockRightInset}{20mm}
+\setlength{\GreenHeaderTop}{\LetterFormHeaderTop}
+\setlength{\GreenFooterBottom}{14mm}
+
+% Shared page area values / Gemeinsame Werte der Seitenbereiche
+\setlength{\ContinuationHeaderTop}{14mm}
+\setlength{\FooterReservedHeight}{38mm}
+\setlength{\BodyBottomMargin}{\FooterReservedHeight}
+\setlength{\FooterBaselineFromBottom}{14mm}
+\setlength{\ContinuationHeaderReservedHeight}{22mm}
+\setlength{\ContinuationHeaderBoxHeight}{34pt}
+\setlength{\BodyTopMargin}{\dimexpr\ContinuationHeaderTop+\ContinuationHeaderReservedHeight\relax}
+
+% Shared header and footer typography / Gemeinsame Kopf- und Fußtypografie
+\newcommand{\HeaderNameSize}{18pt}
+\newcommand{\HeaderNameLeading}{21pt}
+\newcommand{\HeaderPositionSize}{7.4pt}
+\newcommand{\HeaderPositionLeading}{8.9pt}
+\newcommand{\HeaderContactSize}{7pt}
+\newcommand{\HeaderContactLeading}{8.5pt}
+\newcommand{\ContinuationHeaderSize}{7.5pt}
+\newcommand{\ContinuationHeaderLeading}{9pt}
+\newcommand{\FooterPageSize}{8pt}
+\newcommand{\FooterPageLeading}{9pt}
+
+% Global paragraph and line-break behavior / Globales Absatz- und Umbruchverhalten
+\hyphenpenalty=10000
+\exhyphenpenalty=10000
+\emergencystretch=3em
+\tolerance=2500
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.55em}
+
+%---------------------------------------------------------------
+%              SHARED TYPE AREA / GEMEINSAMER SATZSPIEGEL
+%---------------------------------------------------------------
+% Reserves space around overlay headers and footers / Reserviert Platz um überlagerte Kopf- und Fußbereiche
+\newcommand{\ApplyBodyTextArea}{%
+  \setlength{\oddsidemargin}{\dimexpr25mm-1in-\hoffset\relax}%
+  \setlength{\evensidemargin}{\dimexpr25mm-1in-\hoffset\relax}%
+  \setlength{\textwidth}{165mm}%
+  \setlength{\headheight}{\ContinuationHeaderBoxHeight}%
+  \setlength{\headsep}{\dimexpr\ContinuationHeaderReservedHeight-\headheight\relax}%
+  \setlength{\topmargin}{\dimexpr\ContinuationHeaderTop-1in\relax}%
+  \setlength{\textheight}{\dimexpr\paperheight-\BodyTopMargin-\BodyBottomMargin\relax}%
+  \setlength{\footskip}{\dimexpr\BodyBottomMargin-\FooterBaselineFromBottom\relax}%
+}
+\ApplyBodyTextArea
+
+%---------------------------------------------------------------
+%        SHARED KOMA PLACEMENT / GEMEINSAME KOMA-PLATZIERUNG
+%---------------------------------------------------------------
+% Horizontal dimensions are shared. Profile-driven vertical values are
+% refreshed at letter start. / Horizontale Maße sind gemeinsam;
+% profilabhängige Vertikalwerte werden beim Briefstart aktualisiert.
+\setplength{firstheadvpos}{\LetterFormFirstHeadVPos}
+\setplength{firstheadwidth}{170mm}
+\setplength{toaddrvpos}{\LetterFormToAddrVPos}
+\setplength{toaddrhpos}{20mm}
+\setplength{toaddrwidth}{85mm}
+\setplength{toaddrheight}{45mm}
+\setplength{toaddrindent}{5mm}
+\setplength{backaddrheight}{5mm}
+% KOMA measures a positive lochpos from the right page edge / KOMA misst ein positives lochpos vom rechten Blattrand
+\setplength{lochpos}{10mm}
+\setplength{locvpos}{\LetterFormDefaultLocVPos}
+\setplength{locwidth}{75mm}
+% Technical fallback; every curated mode applies its calibrated refvpos later.
+% Technischer Fallback; jeder kuratierte Modus setzt später sein refvpos.
+\setplength{refvpos}{108mm}
+\setplength{sigbeforevskip}{9mm}

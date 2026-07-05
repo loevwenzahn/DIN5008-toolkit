@@ -1,0 +1,20 @@
+% MINIMAL GUIDE PREVIEW
+% Public v1.0 workflow: one preset, public content helpers, LetterBody.
+
+\UseLetterForm{B}
+\UsePreset{minimal-en}
+
+\UseRecipientAddressbook{customer-service}
+\SetLetterSubject{Example: Form B – minimal preset}
+\SetLetterOpening{Greeting}
+\SetLetterClosing{Sign-off}
+
+\begin{LetterBody}
+
+\textbf{What this guide shows}
+
+When the additional panels would be unnecessary, \texttt{minimal-en} keeps the Form B page deliberately quiet. A black monogram remains, while decorative color blocks and the automatic attachment list stay out of view.
+
+Set the recipient and subject in \texttt{content.tex}; add the short correspondence inside \texttt{LetterBody}. Sender information continues to come from \texttt{data/sender-data.tex}. If unchanged demo data remains, the toolkit prints a compiler-log reminder before final use, not a visible warning in the PDF. The preset offers a DIN 5008 Form B oriented starting point without a certification claim.
+
+\end{LetterBody}

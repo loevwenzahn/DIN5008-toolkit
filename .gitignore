@@ -1,0 +1,39 @@
+# LaTeX build files
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.xdv
+*.synctex.gz
+*.synctex
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.lof
+*.lot
+*.nav
+*.snm
+*.vrb
+
+# Temporary and backup files
+*.tmp
+*.bak
+*.backup
+
+# Guide/regression build output
+.build-guides/
+tmp/
+
+# Local imports
+_imports/
+*.zip
+
+# Root build output; approved guide PDFs in letters/pdf remain versionable
+/main.pdf
+
+# System files
+.DS_Store
+Thumbs.db

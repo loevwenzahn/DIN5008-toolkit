@@ -1,0 +1,695 @@
+%=======================================================================
+%              HELPER LAYER / HILFSFUNKTIONEN
+%=======================================================================
+% Normal users work in content.tex. This file stores content state and
+% renders reusable letter components; it does not define form geometry.
+% Normale Nutzer arbeiten in content.tex. Diese Datei speichert Inhalte
+% und rendert wiederverwendbare Briefbausteine; sie definiert keine
+% Formulargeometrie.
+%
+% PUBLIC: LetterBody, draft helpers, letterheading, and noticeblock.
+% INTERNAL: letterhead, information, reference, and attachment rendering.
+% ÖFFENTLICH: LetterBody, Entwurfshilfen, letterheading und noticeblock.
+% INTERN: Briefkopf-, Informations-, Referenz- und Anlagen-Rendering.
+
+% INTERNAL CONTENT STATE / INTERNER INHALTSZUSTAND
+% Set through the public commands documented in content.tex.
+% Setzen über die in content.tex dokumentierten öffentlichen Befehle.
+
+\newcommand{\LetterSubject}{Betreff}
+\newcommand{\LetterOpening}{Sehr geehrte Damen und Herren,}
+\newcommand{\LetterClosing}{Mit freundlichen Grüßen}
+
+% Optional reference fields / Optionale Referenzangaben
+% Empty fields are not printed / Leere Felder werden nicht ausgegeben
+% Usage in content.tex / Verwendung in content.tex:
+% \SetRefAktenzeichen{...}
+% \SetRefKundennummer{...}
+% \SetRefIhrSchreibenVom{...}
+
+\newcommand{\RefAktenzeichen}{}
+\newcommand{\RefBGNummer}{}
+\newcommand{\RefKundennummer}{}
+\newcommand{\RefIhrSchreibenVom}{}
+\newcommand{\RefGeschaeftszeichen}{}
+\newcommand{\RefBearbeitung}{}
+\newcommand{\RefIhrZeichen}{}
+\newcommand{\RefIhreNachrichtVom}{}
+\newcommand{\RefMeinZeichen}{}
+
+% Optional formal number and matter data / Optionale formale Nummern- und Sachverhaltsdaten
+\newcommand{\LegalGeschaeftsnummer}{}
+\newcommand{\LegalSachverhalt}{}
+
+% Default attachments by document type / Standardanlagen nach Dokumenttyp
+% Used by \SetAttachmentsAuto / Verwendet von \SetAttachmentsAuto
+% Custom: \SetAttachmentsCustom{...}; separate entries with \\ / Eigene Anlagen: \SetAttachmentsCustom{...}; Einträge mit \\ trennen
+
+\newcommand{\ApplicationAttachments}{\LocalizedApplicationAttachments}
+\newcommand{\AuthorityAttachments}{\LocalizedAuthorityAttachments}
+\newcommand{\BusinessAttachments}{}
+\newcommand{\MinimalAttachments}{}
+\newcommand{\CustomAttachments}{}
+\newcommand{\ResolvedAttachments}{}
+
+%---------------------------------------------------------------
+%              INTERNAL CORE HELPERS / INTERNE BASISHELFER
+%---------------------------------------------------------------
+% Text field check / Textfeldprüfung
+% #1 text; #2 if present; #3 if empty / #1 Text; #2 wenn vorhanden; #3 wenn leer
+
+\newcommand{\IfTextPresent}[3]{%
+\ifdefempty{#1}{#3}{#2}%
+}
+
+% Page numbering / Seitenzählung
+% Optional total via \UsePageTotaltrue / Optionale Gesamtseitenzahl über \UsePageTotaltrue
+
+\newcommand{\PageNumberText}{%
+\ifLanguageEnglish
+\ifUsePageTotal
+Page~\thepage~of~\pageref*{LastPage}%
+\else
+Page~\thepage%
+\fi
+\else
+\ifUsePageTotal
+Seite~\thepage~von~\pageref*{LastPage}%
+\else
+Seite~\thepage%
+\fi
+\fi
+}
+
+% Contact separator / Kontakttrenner
+% Between contact details in the letterhead / Zwischen Kontaktangaben im Briefkopf
+
+\newcommand{\ContactSeparator}{%
+\quad\textcolor{linegray}{|}\quad
+}
+
+% Optional icon output / Optionale Icon-Ausgabe
+% No icons in authority mode / Keine Icons im Behördenmodus
+% #1 FontAwesome icon; #2 text / #1 FontAwesome-Icon; #2 Text
+
+\newcommand{\MaybeIcon}[2]{%
+\ifdefstring{\DocumentMode}{authority}{%
+#2%
+}{%
+\ifUseIcons
+\ifFontAwesomeAvailable
+\faIcon{#1}~#2%
+\else
+#2%
+\fi
+\else
+#2%
+\fi
+}%
+}
+
+%---------------------------------------------------------------
+%                Letterhead / Briefkopf
+%---------------------------------------------------------------
+% Contact details / Kontaktdaten
+% Values from data/sender-data.tex / Werte aus data/sender-data.tex
+
+\newcommand{\PhoneContact}{\MaybeIcon{phone}{\LabelPhone~\SenderPhone}}
+\newcommand{\EmailContact}{\MaybeIcon{envelope}{\href{mailto:\SenderEmail}{\SenderEmail}}}
+\newcommand{\LinkedInContact}{\MaybeIcon{linkedin}{\href{\SenderLinkedInUrl}{LinkedIn}}}
+\newcommand{\WebsiteContact}{\MaybeIcon{globe}{\href{\SenderWebsiteUrl}{\SenderWebsiteText}}}
+
+% Second contact line / Zweite Kontaktzeile
+% Optional LinkedIn and website / Optional LinkedIn und Website
+
+\newcommand{\MaybeOnlineContactRow}{%
+\ifUseLinkedIn
+\\[0.7mm]{\fontsize{\HeaderContactSize}{\HeaderContactLeading}\selectfont
+\LinkedInContact
+\ifUseWebsite\ContactSeparator\WebsiteContact\fi}%
+\else
+\ifUseWebsite
+\\[0.7mm]{\fontsize{\HeaderContactSize}{\HeaderContactLeading}\selectfont
+\WebsiteContact}%
+\fi
+\fi
+}
+
+% Position or profile line / Positions- oder Profilzeile
+% Requires \UsePositiontrue and \SenderPosition / Benötigt \UsePositiontrue und \SenderPosition
+
+\newcommand{\MaybePositionRow}{%
+\ifUsePosition
+\IfTextPresent{\SenderPosition}{%
+{\fontsize{\HeaderPositionSize}{\HeaderPositionLeading}\selectfont
+\textbf{\textcolor{accent}{\SenderPosition}}}\\[1.6mm]%
+}{}%
+\fi
+}
+
+% Left letterhead content / Linker Briefkopf
+% Name, position, and contact details / Name, Position und Kontaktdaten
+
+\newcommand{\HeaderLeftContent}{%
+{\fontsize{\HeaderNameSize}{\HeaderNameLeading}\selectfont
+\textcolor{textlight}{\SenderFirstName}~\textbf{\textcolor{textdark}{\SenderLastName}}
+}\\[-0.1mm]
+\MaybePositionRow
+{\fontsize{\HeaderContactSize}{\HeaderContactLeading}\selectfont
+\PhoneContact
+\ContactSeparator
+\EmailContact
+}%
+\MaybeOnlineContactRow
+}
+
+% Image logo / Bildlogo
+% Uses \HeaderLogoFile; monogram fallback if the selected file is missing.
+% Nutzt \HeaderLogoFile; Monogramm-Fallback, falls die gewählte Datei fehlt.
+
+\newcommand{\ImageLogo}{%
+\IfFileExists{\HeaderLogoFile}{%
+  \makebox[0pt][r]{%
+    \raisebox{-\height}[0pt][0pt]{%
+      \includegraphics[width=50mm,height=\LetterFormLogoHeight,keepaspectratio]{\HeaderLogoFile}%
+    }%
+  }%
+}{\MonogramLogo}%
+}
+
+% Monogram fallback / Monogramm-Fallback
+% Minimal mode uses a reduced black “mm” mark / Minimalmodus nutzt ein reduziertes schwarzes „mm“-Zeichen
+
+\newcommand{\MonogramLogo}{%
+\def\MonogramColor{accent}%
+\def\MonogramText{MM}%
+\ifdefstring{\DocumentMode}{minimal}{%
+  \def\MonogramColor{black}%
+  \def\MonogramText{MM}%
+}{}%
+\begin{tikzpicture}
+\node[
+circle,
+draw=\MonogramColor,
+line width=0.6pt,
+fill=none,
+minimum width=10mm,
+minimum height=10mm,
+inner sep=0pt
+] {\fontsize{\LetterFormMonogramSize}{\LetterFormMonogramSize}\selectfont\bfseries\textcolor{\MonogramColor}{\MonogramText}};
+\end{tikzpicture}%
+}
+
+% Draft warning in the main letter flow. \DraftMode is authoritative;
+% \UseDraftNotice... is retained only for source compatibility.
+\newcommand{\DraftNoticeInLetterFlow}{%
+  \ifDraftMode
+    \par\noindent\textcolor{red}{\textbf{\LabelDraftNotice}}\par\medskip
+  \fi
+}
+
+%---------------------------------------------------------------
+%     DEMO-DATA REMINDER / HINWEIS AUF DEMO-DATEN
+%---------------------------------------------------------------
+% When draft mode is OFF and the real entry point (content.tex) is compiled,
+% the log warns if shipped demo values are still present. Log-only; this is
+% never printed onto the letter. Disable with \CheckDemoDatafalse.
+% Wenn der Entwurfsmodus AUS ist und content.tex kompiliert wird, warnt der
+% Log-Eintrag bei verbliebenen Demo-Werten. Nur im Log, nie im Brief sichtbar.
+% Mit \CheckDemoDatafalse abschalten.
+
+% Captured demo recipient default from content.tex; the group keeps the exact
+% argument tokenization for an \ifx comparison without touching \RecipientBlock.
+% Erfasster Demo-Empfänger aus content.tex; die Gruppe bewahrt die exakte
+% Tokenfolge für den \ifx-Vergleich, ohne \RecipientBlock zu verändern.
+\newcommand{\DemoRecipientDefault}{}
+\begingroup
+\SetManualRecipient{%
+Beispielorganisation\\
+Allgemeine Korrespondenz\\
+Musterweg 1\\
+12345 Beispielstadt
+}%
+\global\let\DemoRecipientDefault\RecipientBlock
+\endgroup
+
+\newcommand{\WarnDemoField}[1]{%
+  \PackageWarning{letter-template}{%
+    #1 still contains demo data; replace it before sending, or set
+    \string\CheckDemoDatafalse\space to silence this check%
+  }%
+}
+
+\newcommand{\RunDemoDataCheck}{%
+  \ifdefstring{\SenderName}{Max Mustermann}%
+    {\WarnDemoField{Sender name (data/sender-data.tex)}}{}%
+  \ifdefstring{\LetterSubject}{Betreff des eigenen Schreibens}%
+    {\WarnDemoField{Subject (content.tex)}}{}%
+  \ifdefstring{\RecipientMode}{manual}{%
+    \ifdefequal{\RecipientBlock}{\DemoRecipientDefault}%
+      {\WarnDemoField{Recipient (content.tex)}}{}%
+  }{}%
+}
+
+% Gated to the real entry point only: content.tex compiled as jobname "main".
+% Guide previews via \ContentFile (jobname main) and script guide builds
+% (jobname = guide name) both stay silent.
+% Nur am echten Einstieg aktiv: content.tex mit Jobname "main". Guide-Vorschauen
+% über \ContentFile und Skript-Guidebuilds bleiben still.
+\AtEndDocument{%
+  \ifCheckDemoData
+    \ifDraftMode\else
+      \edef\DemoCheckJob{\jobname}%
+      \ifdefstring{\ContentFile}{content.tex}{%
+        \ifdefstring{\DemoCheckJob}{main}{\RunDemoDataCheck}{}%
+      }{}%
+    \fi
+  \fi
+}
+
+% TikZ symbol; no external image required / TikZ-Symbol; keine externe Bilddatei erforderlich
+
+\newcommand{\TikzLogo}{%
+\begin{tikzpicture}[x=1mm,y=1mm]
+\draw[line width=0.9pt, color=accent, line cap=round]
+(0,4) .. controls (7,13) and (18,13) .. (25,4);
+\draw[line width=0.7pt, color=textdark, line cap=round]
+(4,2.5) -- (21,2.5);
+\draw[line width=0.7pt, color=accent, line cap=round]
+(12.5,2.5) -- (12.5,10.5);
+\fill[accent] (12.5,10.5) circle (1);
+\end{tikzpicture}%
+}
+
+% Header variant selection / Auswahl der Briefkopfvariante
+% Possible values / Mögliche Werte:
+% image = logo.png; colorblock = decorative color block / dekorativer Farbblock;
+% monogram = initials / Initialen; tikz = TikZ symbol
+% greenblock remains a compatibility alias for colorblock / greenblock bleibt ein Kompatibilitätsalias für colorblock
+
+\newcommand{\IfColorBlockHeaderTF}[2]{%
+\ifdefstring{\HeaderVariant}{colorblock}{#1}{%
+\ifdefstring{\HeaderVariant}{greenblock}{#1}{#2}%
+}%
+}
+
+\newcommand{\BrandLogo}{%
+\ifdefstring{\HeaderVariant}{image}{\ImageLogo}{%
+\ifdefstring{\HeaderVariant}{tikz}{\TikzLogo}{\MonogramLogo}%
+}%
+}
+
+% Right header logo / Logo rechts im Briefkopf
+% Selected logo, right-aligned / Gewähltes Logo, rechtsbündig
+
+\newcommand{\HeaderLogoContent}{\raggedleft\ifUseHeaderLogo\BrandLogo\fi}
+
+% Business letterhead: logo at the active form profile position.
+% Geschäftsbriefkopf: Logo an der Position des aktiven Formprofils.
+\newcommand{\BusinessHeaderLogo}{%
+\IfFileExists{\HeaderLogoFile}{%
+  \includegraphics[width=75mm,height=\LetterFormLogoHeight,keepaspectratio]{\HeaderLogoFile}%
+}{\MonogramLogo}%
+}
+
+\newcommand{\BusinessHeaderContent}{%
+\ifUseHeaderLogo
+\begin{tikzpicture}[remember picture,overlay]
+  \node[anchor=north west,inner sep=0pt,outer sep=0pt]
+    at ([xshift=\LetterFormBusinessLogoX,yshift=-\LetterFormBusinessLogoTop]current page.north west)
+    {\makebox[75mm][c]{\BusinessHeaderLogo}};
+\end{tikzpicture}%
+\fi
+}
+
+%---------------------------------------------------------------
+%          Business information block / Informationsblock
+%---------------------------------------------------------------
+% Shared 75 mm component; its page position comes from the active form profile.
+% Gemeinsamer 75-mm-Baustein; seine Seitenposition kommt aus dem aktiven Formprofil.
+% Empty optional values are omitted / Leere optionale Werte entfallen
+
+\newcommand{\BusinessInformationRow}[2]{%
+  {\raggedright\textcolor{textmid}{#1}} & {\raggedright #2}\tabularnewline[0.25mm]
+}
+
+\newcommand{\MaybeBusinessInformationRow}[3]{%
+\IfTextPresent{#2}{\BusinessInformationRow{#1}{#3}}{}%
+}
+
+% Allow a deliberate line break after @ in the shared 75 mm information
+% block while keeping the regular text font.
+\def\BusinessEmailWithBreak#1@#2\BusinessEmailEnd{#1@\allowbreak#2}
+\newcommand{\BusinessEmailText}{%
+  \expandafter\BusinessEmailWithBreak\SenderEmail\BusinessEmailEnd
+}
+
+\newcommand{\BusinessInformationBlock}{%
+\begingroup
+\fontsize{11pt}{14.3pt}\selectfont
+\setlength{\tabcolsep}{0pt}%
+\begin{tabular}{@{}p{20mm}@{\hspace{1.5mm}}p{53.5mm}@{}}
+\MaybeBusinessInformationRow{\LabelBusinessContactPerson}{\SenderContactPerson}{\SenderContactPerson}%
+\MaybeBusinessInformationRow{\LabelBusinessDepartment}{\SenderDepartment}{\SenderDepartment}%
+\MaybeBusinessInformationRow{\LabelBusinessPhone}{\SenderPhone}{\SenderPhone}%
+\MaybeBusinessInformationRow{\LabelBusinessFax}{\SenderFax}{\SenderFax}%
+\MaybeBusinessInformationRow{\LabelBusinessEmail}{\SenderEmail}{\href{mailto:\SenderEmail}{\BusinessEmailText}}%
+\MaybeBusinessInformationRow{\LabelBusinessWebsite}{\SenderWebsiteText}{\href{\SenderWebsiteUrl}{\SenderWebsiteText}}%
+\BusinessInformationRow{\LabelBusinessDate}{\today}%
+\end{tabular}
+\endgroup
+}
+
+% The stored value is evaluated when KOMA renders the letter / Der gespeicherte Wert wird beim Setzen des Briefs ausgewertet
+\newcommand{\BusinessLocationContent}{%
+\ifdefstring{\DocumentMode}{business}{\BusinessInformationBlock}{}%
+}
+
+% Authority-only reference block at the active profile position.
+% Behörden-Referenzblock an der Position des aktiven Formprofils.
+% The shared component totals 75 mm; empty optional rows are omitted.
+% Der gemeinsame Baustein ist 75 mm breit; leere optionale Zeilen entfallen.
+
+\newcommand{\AuthorityReferenceRow}[2]{%
+  {\raggedright\bfseries\textcolor{textmid}{#1}\par} & {\raggedright #2}\tabularnewline[0.25mm]
+}
+
+\newcommand{\MaybeAuthorityReferenceRow}[2]{%
+\IfTextPresent{#2}{\AuthorityReferenceRow{#1}{#2}}{}%
+}
+
+% Prefer letter-specific \Ref... data and otherwise use neutral authority defaults / Briefspezifische \Ref...-Daten bevorzugen, sonst neutrale Behörden-Standardwerte nutzen
+\newcommand{\AuthorityFallbackRow}[3]{%
+\ifdefempty{#2}{%
+  \ifdefempty{#3}{}{\AuthorityReferenceRow{#1}{#3}}%
+}{\AuthorityReferenceRow{#1}{#2}}%
+}
+
+\newcommand{\AuthorityTwoLineFallbackRow}[4]{%
+\ifdefempty{#2}{%
+  \ifdefempty{#3}{%
+    \ifdefempty{#4}{}{\AuthorityReferenceRow{#1}{#4}}%
+  }{%
+    \AuthorityReferenceRow{#1}{#3\ifdefempty{#4}{}{\\#4}}%
+  }%
+}{\AuthorityReferenceRow{#1}{#2}}%
+}
+
+\newcommand{\AuthorityReferenceBlock}{%
+\begingroup
+\fontsize{11pt}{14.3pt}\selectfont
+\setlength{\tabcolsep}{0pt}%
+\begin{tabular}{@{}p{39mm}@{\hspace{1.5mm}}p{34.5mm}@{}}
+\AuthorityTwoLineFallbackRow{\LabelRefIhrZeichen}{\RefIhrZeichen}{\AuthorityIhrZeichenLineOne}{\AuthorityIhrZeichenLineTwo}%
+\AuthorityFallbackRow{\LabelRefIhreNachrichtVom}{\RefIhreNachrichtVom}{\AuthorityIhreNachrichtVom}%
+\AuthorityTwoLineFallbackRow{\LabelRefMeinZeichen}{\RefMeinZeichen}{\AuthorityMeinZeichenLineOne}{\AuthorityMeinZeichenLineTwo}%
+\AuthorityFallbackRow{\LabelRefKundennummer}{\RefKundennummer}{\AuthorityKundennummer}%
+\AuthorityFallbackRow{\LabelRefBGNummer}{\RefBGNummer}{\AuthorityBGNummer}%
+\MaybeAuthorityReferenceRow{\LabelBusinessFax}{\SenderFax}%
+\AuthorityReferenceRow{\LabelRefDatum}{\AuthorityDatum}%
+\end{tabular}
+\endgroup
+}
+
+\newcommand{\AuthorityLocationContent}{%
+\ifdefstring{\DocumentMode}{authority}{\AuthorityReferenceBlock}{}%
+}
+
+% Optional formal matter block in the area reserved by the active profile.
+% Optionaler formaler Sachverhaltsblock im Bereich des aktiven Formprofils.
+% Compact outlined fields; empty fields are omitted.
+% Kompakte Rahmenfelder; leere Felder werden nicht ausgegeben.
+\newcommand{\LegalCaseField}[2]{%
+  \begingroup
+  \setlength{\fboxsep}{2mm}%
+  \setlength{\fboxrule}{0.6pt}%
+  \fcolorbox{linegray}{white}{%
+    \parbox[t]{65mm}{%
+      \raggedright
+      {\fontsize{7pt}{8.5pt}\selectfont\textcolor{textmid}{#1}\par}%
+      \vspace{1.1mm}%
+      {\fontsize{9pt}{11pt}\selectfont\bfseries #2\strut}%
+    }%
+  }%
+  \endgroup
+}
+
+\newcommand{\MaybeLegalCaseField}[2]{%
+  \IfTextPresent{#2}{\LegalCaseField{#1}{#2}\par\vspace{1.8mm}}{}%
+}
+
+\newcommand{\LegalCaseBlock}{%
+\normalfont
+\MaybeLegalCaseField{\LabelLegalGeschaeftsnummer}{\LegalGeschaeftsnummer}%
+\MaybeLegalCaseField{\LabelLegalSachverhalt}{\LegalSachverhalt}%
+}
+
+\newcommand{\LegalLocationContent}{%
+\ifdefstring{\DocumentMode}{legal}{%
+  \ifdefempty{\LegalGeschaeftsnummer}{%
+    \ifdefempty{\LegalSachverhalt}{}{\LegalCaseBlock}%
+  }{\LegalCaseBlock}%
+}{}%
+}
+
+% Formal horizontal reference block above the subject.
+% Horizontaler formaler Referenzblock oberhalb des Betreffs.
+\newcommand{\LegalReferenceColumn}[2]{%
+\parbox[t]{38mm}{%
+  \raggedright
+  \normalfont\fontsize{8pt}{10pt}\selectfont
+  \textbf{\textcolor{textmid}{#1}}\par
+  \vspace{1mm}%
+  #2%
+}%
+}
+
+\newcommand{\LegalFallbackColumn}[3]{%
+\ifdefempty{#2}{%
+  \ifdefempty{#3}{}{\LegalReferenceColumn{#1}{#3}}%
+}{\LegalReferenceColumn{#1}{#2}}%
+}
+
+\newcommand{\LegalTwoLineFallbackColumn}[4]{%
+\ifdefempty{#2}{%
+  \ifdefempty{#3}{%
+    \ifdefempty{#4}{}{\LegalReferenceColumn{#1}{#4}}%
+  }{\LegalReferenceColumn{#1}{#3\ifdefempty{#4}{}{\\#4}}}%
+}{\LegalReferenceColumn{#1}{#2}}%
+}
+
+\newcommand{\LegalReferenceBlock}{%
+\begingroup
+\normalfont
+\makebox[\linewidth][l]{%
+  \LegalTwoLineFallbackColumn{\LabelRefIhrZeichen}{\RefIhrZeichen}{\AuthorityIhrZeichenLineOne}{\AuthorityIhrZeichenLineTwo}%
+  \hfill
+  \LegalTwoLineFallbackColumn{\LabelRefMeinZeichen}{\RefMeinZeichen}{\AuthorityMeinZeichenLineOne}{\AuthorityMeinZeichenLineTwo}%
+  \hfill
+  \LegalFallbackColumn{\LabelRefIhreNachrichtVom}{\RefIhreNachrichtVom}{\AuthorityIhreNachrichtVom}%
+  \hfill
+  \LegalReferenceColumn{\LabelRefOrtDatum}{\SenderPlace, \today}%
+}%
+\endgroup
+}
+
+\newcommand{\LegalSubjectContent}{%
+\LegalReferenceBlock
+\par\vspace{3.6mm}%
+\LetterSubject
+}
+
+\newcommand{\ResolvedSubjectContent}{%
+\ifdefstring{\DocumentMode}{legal}{\LegalSubjectContent}{\LetterSubject}%
+}
+
+%---------------------------------------------------------------
+%                    Reference block / Referenzblock
+%---------------------------------------------------------------
+% Content flag / Inhaltsmerker
+
+\newif\ifHasReferenceContent
+
+% Reference field check / Referenzfeldprüfung
+% Enables the block if any field is set / Aktiviert den Block, sobald ein Feld gesetzt ist
+
+\newcommand{\CheckReferenceContent}{%
+\HasReferenceContentfalse
+\ifdefempty{\RefAktenzeichen}{}{\HasReferenceContenttrue}%
+\ifdefempty{\RefBGNummer}{}{\HasReferenceContenttrue}%
+\ifdefempty{\RefKundennummer}{}{\HasReferenceContenttrue}%
+\ifdefempty{\RefIhrSchreibenVom}{}{\HasReferenceContenttrue}%
+\ifdefempty{\RefGeschaeftszeichen}{}{\HasReferenceContenttrue}%
+\ifdefempty{\RefBearbeitung}{}{\HasReferenceContenttrue}%
+}
+
+% Reference row / Referenzzeile
+% #1 label; #2 value / #1 Bezeichnung; #2 Wert
+
+\newcommand{\ReferenceRow}[2]{%
+\textcolor{textmid}{#1} & #2\\[-0.2mm]
+}
+
+% Reference block content / Referenzblockinhalt
+% Empty fields are skipped / Leere Felder werden übersprungen
+
+\newcommand{\ReferenceBlockContent}{%
+\begingroup
+\fontsize{8.6pt}{10.8pt}\selectfont
+\setlength{\tabcolsep}{0pt}
+\begin{tabular}{@{}p{31mm}p{94mm}@{}}
+\ifdefempty{\RefAktenzeichen}{}{\ReferenceRow{\LabelRefAktenzeichen}{\RefAktenzeichen}}%
+\ifdefempty{\RefBGNummer}{}{\ReferenceRow{\LabelRefBGNummer}{\RefBGNummer}}%
+\ifdefempty{\RefKundennummer}{}{\ReferenceRow{\LabelRefKundennummer}{\RefKundennummer}}%
+\ifdefempty{\RefIhrSchreibenVom}{}{\ReferenceRow{\LabelRefIhrSchreibenVom}{\RefIhrSchreibenVom}}%
+\ifdefempty{\RefGeschaeftszeichen}{}{\ReferenceRow{\LabelRefGeschaeftszeichen}{\RefGeschaeftszeichen}}%
+\ifdefempty{\RefBearbeitung}{}{\ReferenceRow{\LabelRefBearbeitung}{\RefBearbeitung}}%
+\end{tabular}
+\endgroup
+}
+
+% Reference block output / Referenzblockausgabe
+% Requires enabled mode and content / Benötigt aktivierten Modus und Inhalt
+
+\newcommand{\MaybeReferenceBlock}{%
+\ifdefstring{\DocumentMode}{authority}{}{%
+\ifUseReferenceBlock
+\CheckReferenceContent
+\ifHasReferenceContent
+\par\vspace{0.2em}
+\noindent{\color{linegray}\rule{\linewidth}{0.35pt}}%
+\par\vspace{0.35em}
+\ReferenceBlockContent
+\par\vspace{0.55em}
+{\color{linegray}\rule{\linewidth}{0.35pt}}%
+\par\vspace{1.0em}
+\fi
+\fi
+}%
+}
+
+%---------------------------------------------------------------
+%                    Attachments / Anlagen
+%---------------------------------------------------------------
+% Possible modes / Mögliche Modi:
+% auto = mode defaults / Modusstandard; custom = custom / eigene; none = disabled / deaktiviert
+
+\newcommand{\ResolveAttachments}{%
+\renewcommand{\ResolvedAttachments}{}%
+\ifdefstring{\AttachmentMode}{none}{%
+\UseAttachmentsfalse
+}{%
+\ifdefstring{\AttachmentMode}{custom}{%
+\let\ResolvedAttachments\CustomAttachments
+}{%
+\ifdefstring{\AttachmentPreset}{application}{%
+\let\ResolvedAttachments\ApplicationAttachments
+}{%
+\ifdefstring{\AttachmentPreset}{authority}{%
+\let\ResolvedAttachments\AuthorityAttachments
+}{%
+\ifdefstring{\AttachmentPreset}{business}{%
+\let\ResolvedAttachments\BusinessAttachments
+}{%
+\let\ResolvedAttachments\MinimalAttachments
+}%
+}%
+}%
+}%
+\ifdefempty{\ResolvedAttachments}{\UseAttachmentsfalse}{\UseAttachmentstrue}%
+}%
+}
+
+% Attachments output / Anlagenausgabe
+% Printed only if enabled and not empty / Nur aktiv und nicht leer ausgegeben
+
+\newcommand{\MaybeAttachments}{%
+\ResolveAttachments
+\ifUseAttachments
+\ifdefempty{\ResolvedAttachments}{}{\encl{\ResolvedAttachments}}%
+\fi
+}
+
+%---------------------------------------------------------------
+%             PUBLIC: DRAFT HELPERS / ÖFFENTLICH: ENTWURFSHILFEN
+%---------------------------------------------------------------
+% Visible only with \DraftModetrue / Nur mit \DraftModetrue sichtbar
+
+\newcommand{\DraftTag}[2]{%
+\ifDraftMode
+\begingroup
+\setlength{\fboxsep}{2.5pt}%
+\colorbox{draftyellow}{%
+{\fontsize{8pt}{9.5pt}\selectfont
+\textcolor{draftorange}{\textbf{#1:} #2}}%
+}%
+\endgroup
+\fi
+}
+
+% TODO marker / TODO-Markierung
+% Usage / Nutzung:
+% \TODO{Check text / Text prüfen}
+
+\newcommand{\TODO}[1]{\DraftTag{TODO}{#1}}
+
+% Draft note / Entwurfsnotiz
+% Usage / Nutzung:
+% \DRAFTNOTE{Add follow-up question / Rückfrage ergänzen}
+
+\newcommand{\DRAFTNOTE}[1]{\DraftTag{\LabelDraftNote}{#1}}
+
+% Placeholder / Platzhalter
+% Usage / Nutzung:
+% \PLACEHOLDER{Add paragraph / Absatz ergänzen}
+
+\newcommand{\PLACEHOLDER}[1]{\ifDraftMode\textcolor{draftorange}{[#1]}\fi}
+
+%---------------------------------------------------------------
+%              PUBLIC: TEXT BLOCKS / ÖFFENTLICH: TEXTBAUSTEINE
+%---------------------------------------------------------------
+% Usage / Nutzung:
+% \letterheading{Heading / Überschrift}
+
+\newcommand{\letterheading}[1]{%
+\vspace{0.75em}
+{\normalsize\bfseries\textcolor{textdark}{#1}}%
+\hspace{0.55em}{\color{linegray}\rule[0.45ex]{0.34\linewidth}{0.4pt}}%
+\par\vspace{0.25em}
+}
+
+% Notice block / Hinweisblock
+% Usage / Nutzung:
+% \noticeblock{Notice text / Hinweistext}
+
+\newcommand{\noticeblock}[1]{%
+\vspace{0.6em}
+\begingroup
+\setlength{\fboxsep}{7pt}
+\noindent
+\colorbox{noticebackground}{%
+\parbox{\dimexpr\linewidth-2\fboxsep\relax}{%
+\fontsize{9.5pt}{12pt}\selectfont #1%
+}%
+}
+\endgroup
+\vspace{0.4em}
+}
+
+%---------------------------------------------------------------
+%       PUBLIC: NATURAL LETTER BODY / ÖFFENTLICH: BRIEFTEXT
+%---------------------------------------------------------------
+% Wraps the technical scrlttr2 letter structure so users can write normal
+% paragraphs between \begin{LetterBody} and \end{LetterBody}.
+% Kapselt die technische Briefstruktur, damit Nutzer normalen Fließtext
+% zwischen \begin{LetterBody} und \end{LetterBody} schreiben können.
+
+\newenvironment{LetterBody}{%
+  \begin{letter}{\ResolvedRecipientBlock}%
+  \opening{\MaybeReferenceBlock\DraftNoticeInLetterFlow\LetterOpening}%
+}{%
+  \closing{\LetterClosing}%
+  \MaybeAttachments
+  \end{letter}%
+}
+

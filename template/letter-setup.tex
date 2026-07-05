@@ -1,0 +1,185 @@
+%=======================================================================
+%       INTERNAL LETTER ORCHESTRATION / INTERNE BRIEFSTEUERUNG
+%=======================================================================
+% Connects content state, the active form profile, document mode, and KOMA.
+% Verbindet Inhaltszustand, aktives Formprofil, Dokumentmodus und KOMA.
+
+% KOMA VARIABLE DEFAULTS / KOMA-VARIABLENSTANDARDWERTE
+% Sender data from data/sender-data.tex / Absenderdaten aus data/sender-data.tex
+\setkomavar{fromname}{\SenderName}
+\setkomavar{fromaddress}{\SenderStreet\\\SenderCity}
+
+% Place and current compilation date / Ort und aktuelles Kompilierdatum
+\setkomavar{place}{\SenderPlace}
+\setkomavar{date}{\today}
+
+% Return address above the recipient field / Rücksendezeile über dem Anschriftfeld
+\setkomavar{backaddress}{\SenderName\,·\,\SenderStreet\,·\,\SenderCity}
+
+% Subject set with \SetLetterSubject{...} / Betreff aus \SetLetterSubject{...}
+\setkomavar{subject}{\ResolvedSubjectContent}
+
+% Profile-positioned information block with mode-specific content.
+% Durch das Formprofil positionierter Informationsblock mit modusspezifischem Inhalt.
+\setkomavar{location}{%
+  \ifdefstring{\DocumentMode}{authority}{\AuthorityLocationContent}{%
+    \ifdefstring{\DocumentMode}{legal}{\LegalLocationContent}{\BusinessLocationContent}%
+  }%
+}
+
+%---------------------------------------------------------------
+%      KOMA-SENSITIVE ADDRESS STACK / KOMA-SENSIBLER ADRESSBLOCK
+%---------------------------------------------------------------
+% Return address font / Schrift der Rücksendezeile
+\setkomafont{backaddress}{\fontsize{7pt}{8pt}\selectfont\color{textmid}}
+
+% Optional remark line above the return address / Optionale Vermerkzeile über der Rücksendeangabe
+\setkomafont{specialmail}{\normalfont\fontsize{8pt}{10pt}\selectfont\color{textmid}}
+% Intentional KOMA-internal formatting override. Keep this small and verify it
+% when changing KOMA/TeX Live versions. / Absichtlicher Eingriff in interne
+% KOMA-Formatierung; bei KOMA-/TeX-Live-Wechseln gezielt prüfen.
+\makeatletter
+\renewcommand{\backaddr@format}[1]{%
+  \hspace*{5mm}\parbox[t][5mm][t]{80mm}{%
+    {\usekomafont{specialmail}\strut\ignorespaces\SenderRemark\ifhmode\scr@endstrut\fi}%
+  }%
+}
+\renewcommand{\specialmail@format}[1]{%
+  \parbox[t][12.7mm][t]{80mm}{%
+    \strut\underline{{\usekomafont{backaddress}\usekomavar{backaddress}}}%
+    \ifhmode\scr@endstrut\fi
+  }%
+}
+\makeatother
+
+% SHARED TYPOGRAPHY AND OVERLAYS / GEMEINSAME TYPOGRAFIE UND OVERLAYS
+% Subject font / Schrift des Betreffs
+\setkomafont{subject}{\normalfont\bfseries\large\color{textdark}}
+
+% Application/Minimal date in the free right-hand area above the subject / Datum in Bewerbung/Minimal im freien rechten Bereich oberhalb des Betreffs
+\newcommand{\ApplicationMinimalDateOverlay}{%
+  \ifdefstring{\DocumentMode}{application}{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \node[anchor=base east,inner sep=0pt,outer sep=0pt]
+        at ([xshift=-20mm,yshift=-88.5mm]current page.north east)
+        {\normalfont\fontsize{11pt}{13pt}\selectfont
+          \ifdefempty{\SenderPlace}{\today}{\SenderPlace, \today}};
+    \end{tikzpicture}%
+  }{%
+    \ifdefstring{\DocumentMode}{minimal}{%
+      \begin{tikzpicture}[remember picture,overlay]
+        \node[anchor=base east,inner sep=0pt,outer sep=0pt]
+          at ([xshift=-20mm,yshift=-88.5mm]current page.north east)
+          {\normalfont\fontsize{11pt}{13pt}\selectfont
+            \ifdefempty{\SenderPlace}{\today}{\SenderPlace, \today}};
+      \end{tikzpicture}%
+    }{}%
+  }%
+}
+
+% Left-aligned signature / Linksbündige Signatur
+\renewcommand*{\raggedsignature}{\raggedright}
+
+% Normal letter body: keep the active base size and use 130% line spacing.
+% Normaler Brieftext: aktive Grundgröße beibehalten, Zeilenabstand 130 %.
+\makeatletter
+\newcommand{\ApplyLetterBodyTypography}{%
+  \dimen@=\f@size pt%
+  \multiply\dimen@ by 13%
+  \divide\dimen@ by 10%
+  \fontsize{\f@size pt}{\the\dimen@}\selectfont
+}
+\makeatother
+
+% APPLY ACTIVE FORM AND MODE / AKTIVE FORM UND MODUS ANWENDEN
+\AtBeginEnvironment{letter}{%
+  \ifdefstring{\LetterForm}{A}{\ApplyLetterFormA}{\ApplyLetterFormB}%
+  \setplength{specialmailindent}{5mm}%
+  \setplength{specialmailrightindent}{0mm}%
+  \ifUseBackaddress
+    \setkomavar{backaddress}{\SenderName\,·\,\SenderStreet\,·\,\SenderCity}%
+  \else
+    \setkomavar{backaddress}{}%
+  \fi
+  % \null keeps the calibrated address-stack height when no remark is shown.
+  % \null erhält die kalibrierte Adressblockhöhe ohne sichtbaren Vermerk.
+  \ifdefempty{\SenderRemark}{\setkomavar{specialmail}{\null}}{\setkomavar{specialmail}{\SenderRemark}}%
+  \ifdefstring{\DocumentMode}{business}{%
+    % Align the information block with the visible address-field content:
+    % return address when enabled, otherwise the first recipient line.
+    \ifUseBackaddress
+      \setplength{locvpos}{\LetterFormBusinessLocWithBack}%
+    \else
+      \setplength{locvpos}{\LetterFormBusinessLocWithoutBack}%
+    \fi
+    \setplength{refvpos}{\LetterFormStandardRefVPos}%
+    \setkomavar{date}{}%
+  }{%
+    \ifdefstring{\DocumentMode}{authority}{%
+      % Align the Authority reference block with the return-address line.
+      \setplength{locvpos}{\LetterFormAuthorityLoc}%
+      \setplength{refvpos}{\LetterFormStandardRefVPos}%
+      \setkomavar{date}{}%
+    }{%
+      \ifdefstring{\DocumentMode}{legal}{%
+        \setplength{locvpos}{\LetterFormLegalLoc}%
+        % Visible top edge of the formal horizontal reference block: 103.46 mm.
+        \setplength{refvpos}{\LetterFormLegalRefVPos}%
+        \setkomavar{date}{}%
+      }{%
+        \ifdefstring{\DocumentMode}{application}{%
+          \setplength{refvpos}{\LetterFormStandardRefVPos}%
+          \setplength{refaftervskip}{0mm}%
+          % Preserve KOMA's date row so the calibrated subject position does not move.
+          \setkomavar{place}{}%
+          \setkomavar{date}{\strut}%
+        }{%
+          \ifdefstring{\DocumentMode}{minimal}{%
+            % Subject and text block use the active form profile's calibrated start.
+            \setplength{refvpos}{\LetterFormStandardRefVPos}%
+            \setplength{refaftervskip}{0mm}%
+            \setkomavar{place}{}%
+            \setkomavar{date}{\strut}%
+          }{}%
+        }%
+      }%
+    }%
+  }%
+}
+
+\apptocmd{\opening}{\ApplyLetterBodyTypography}{}{}
+
+%---------------------------------------------------------------
+%              FIRST-PAGE HEADER / BRIEFKOPF DER ERSTEN SEITE
+%---------------------------------------------------------------
+% Letterhead selected by \HeaderVariant / Briefkopf gemäß \HeaderVariant
+\setkomavar{firsthead}{%
+\ApplicationMinimalDateOverlay
+\ifdefstring{\DocumentMode}{business}{%
+  \BusinessHeaderContent
+}{%
+\ifdefstring{\DocumentMode}{authority}{}{%
+\ifdefstring{\DocumentMode}{legal}{}{%
+  \IfColorBlockHeaderTF{%
+  \begin{minipage}[t]{0.68\textwidth}
+  \HeaderLeftContent
+  \end{minipage}
+  }{%
+  \begin{minipage}[t]{0.76\textwidth}
+  \HeaderLeftContent
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.18\textwidth}
+  \HeaderLogoContent
+  \end{minipage}
+  }%
+}%
+}%
+}%
+}
+
+% Footer handled by scrlayer-scrpage / Fußzeile über scrlayer-scrpage
+\setkomavar{firstfoot}{}
+
+% Activate the defined page style / Definierten Seitenstil aktivieren
+\pagestyle{scrheadings}

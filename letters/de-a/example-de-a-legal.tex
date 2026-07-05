@@ -1,0 +1,28 @@
+% BEDIENVORSCHAU FORMALER MODUS
+% Öffentlicher Arbeitsablauf: eine Vorgabe, öffentliche Inhaltsbefehle und LetterBody.
+
+\UseLetterForm{A}
+\UsePreset{legal-de}
+
+\UseRecipientManual
+\SetManualRecipient{Fiktive Dokumentenstelle\\Allgemeine Korrespondenz\\Unterlagenweg 3\\12345 Beispielstadt}
+\SetLetterSubject{Beispiel für Form A im Modus: legal}
+\SetLetterOpening{Anrede}
+\SetLetterClosing{Grußformel}
+
+\SetRefIhrZeichen{DOK-12}
+\SetRefMeinZeichen{MUSTER-26}
+\SetRefIhreNachrichtVom{12. Mai 2026}
+\SetLegalGeschaeftsnummer{}
+\SetLegalSachverhalt{Musterunterlagen vom 12. Mai 2026}
+\SetAttachmentsCustom{Übersicht der Musterunterlagen\\Fiktives Informationsblatt}
+
+\begin{LetterBody}
+
+\textbf{Was dieser Guide zeigt}
+
+Für gegliederte formale Korrespondenz verwendet \texttt{legal-de} eine zurückhaltende schwarze Gestaltung und einen waagerechten Bezugsbereich. Diese Vorschau füllt nur den optionalen Sachverhaltsblock; der leere Geschäftsnummernblock entfällt. Der benutzerdefinierte Anlagenbefehl erzeugt die Liste am Ende, der Betreff bleibt direkt unter dem Bezugsbereich.
+
+Passe Bezugswerte und Anlagen nur dort an, wo die Korrespondenz sie benötigt; der eigentliche Text bleibt in \texttt{LetterBody}. Die neutralisierte Vorschau beschreibt keinen realen Sachverhalt. Dies ist ein an DIN 5008 Form A orientiertes Layout für formale Korrespondenz, keine Rechtsberatung und nicht DIN-zertifiziert.
+
+\end{LetterBody}

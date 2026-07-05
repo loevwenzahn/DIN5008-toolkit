@@ -1,0 +1,48 @@
+%---------------------------------------------------------------
+%                      Packages / Pakete
+%---------------------------------------------------------------
+% Compiler: XeLaTeX / Compiler: XeLaTeX
+
+% German and English language support / Deutsche und englische Sprachunterstützung
+\usepackage[english,main=ngerman]{babel}
+
+% System and OpenType fonts / System- und OpenType-Schriften
+\usepackage{fontspec}
+
+% Color definitions / Farbdefinitionen
+\usepackage{xcolor}
+
+% Colored PDF links / Farbige PDF-Links
+\usepackage[colorlinks=true]{hyperref}
+
+% Reference to the last page / Referenz auf die letzte Seite
+\usepackage{lastpage}
+
+% Typographic refinement / Typografische Optimierung
+\usepackage{microtype}
+
+% Image support / Bildunterstützung
+\usepackage{graphicx}
+
+% Vector graphics and calculations / Vektorgrafiken und Berechnungen
+\usepackage{tikz}
+\usetikzlibrary{calc}
+
+% Conditional and string helpers / Hilfsfunktionen für Bedingungen und Zeichenketten
+\usepackage{etoolbox}
+
+% Extended text alignment / Erweiterte Textausrichtung
+\usepackage{ragged2e}
+
+% Header and footer layers / Ebenen für Kopf- und Fußzeilen
+\usepackage{scrlayer-scrpage}
+
+% Optional Font Awesome icons / Optionale Font-Awesome-Icons
+\IfFileExists{fontawesome5.sty}{%
+  \usepackage{fontawesome5}
+  \newif\ifFontAwesomeAvailable
+  \FontAwesomeAvailabletrue
+}{%
+  \newif\ifFontAwesomeAvailable
+  \FontAwesomeAvailablefalse
+}

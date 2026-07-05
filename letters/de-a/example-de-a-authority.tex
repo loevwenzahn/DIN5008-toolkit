@@ -1,0 +1,30 @@
+% BEDIENVORSCHAU BEHÖRDENMODUS
+% Öffentlicher Arbeitsablauf: eine Vorgabe, öffentliche Inhaltsbefehle und LetterBody.
+
+\UseLetterForm{A}
+\UsePreset{authority-de}
+\SetColorGray
+\UseHeaderColorBlocktrue
+
+\UseRecipientManual
+\SetManualRecipient{Fiktive Verwaltungsstelle\\Allgemeine Auskunft\\Musterweg 4\\12345 Beispielstadt}
+\SetLetterSubject{Beispiel für Form A im Modus: authority}
+\SetLetterOpening{Anrede}
+\SetLetterClosing{Grußformel}
+
+\SetRefIhrZeichen{INFO-A}
+\SetRefIhreNachrichtVom{15. Juni 2026}
+\SetRefMeinZeichen{MUSTER-B}
+\SetRefKundennummer{K-0000}
+\SetRefBGNummer{N-0000}
+\renewcommand{\SenderFax}{+49 000 0000001}
+
+\begin{LetterBody}
+
+\textbf{Was dieser Guide zeigt}
+
+Mit \texttt{authority-de} erhält die Seite einen gegliederten Bezugsblock rechts und die voreingestellten Behördenanlagen. Für diese Vorschau wird der Kopf in Grau gesetzt. Neutrale Bezugswerte und die optionale Faxangabe zeigen, wie Kennzeichen, Nummern und Kontaktdaten in den Block gelangen; leere optionale Felder entfallen automatisch.
+
+Behalte für das eigene Dokument die Form-A-Auswahl bei und passe Empfänger, Betreff, Bezugswerte und Anlagen in \texttt{content.tex} an. \texttt{LetterBody} bleibt dem geschriebenen Inhalt vorbehalten. Sämtliche Angaben sind fiktive und neutralisierte Demo-Daten; das Layout ist an DIN 5008 Form A orientiert und nicht DIN-zertifiziert. Es beschreibt keinen realen Verwaltungsvorgang.
+
+\end{LetterBody}

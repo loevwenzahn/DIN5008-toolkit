@@ -1,0 +1,130 @@
+%=======================================================================
+%          INTERNAL LOCALIZATION / INTERNE LOKALISIERUNG
+%=======================================================================
+% Visible German and English strings. Language is selected by the -de/-en
+% preset in content.tex. / Sichtbare deutsche und englische Texte. Die
+% Sprache wählt das -de/-en-Preset in content.tex.
+
+% Contact labels / Kontaktbezeichnungen
+\newcommand{\LabelPhone}{%
+  \ifLanguageEnglish Phone\else Tel.\fi
+}
+
+% Business information block labels / Bezeichnungen im Geschäftsbrief-Informationsblock
+\newcommand{\LabelBusinessContactPerson}{%
+  \ifLanguageEnglish Contact\else Kontakt\fi
+}
+
+\newcommand{\LabelBusinessDepartment}{%
+  \ifLanguageEnglish Department\else Abteilung\fi
+}
+
+\newcommand{\LabelBusinessPhone}{%
+  \ifLanguageEnglish Phone\else Telefon\fi
+}
+
+\newcommand{\LabelBusinessFax}{%
+  \ifLanguageEnglish Fax\else Telefax\fi
+}
+
+\newcommand{\LabelBusinessEmail}{E-Mail}
+
+\newcommand{\LabelBusinessWebsite}{%
+  \ifLanguageEnglish Website\else Webseite\fi
+}
+
+\newcommand{\LabelBusinessDate}{%
+  \ifLanguageEnglish Date\else Datum\fi
+}
+
+% Reference field labels / Bezeichnungen der Referenzfelder
+\newcommand{\LabelRefIhrZeichen}{%
+  \ifLanguageEnglish Your reference\else Ihr Zeichen\fi
+}
+
+\newcommand{\LabelRefIhreNachrichtVom}{%
+  \ifLanguageEnglish Your message dated\else Ihre Nachricht vom\fi
+}
+
+\newcommand{\LabelRefMeinZeichen}{%
+  \ifLanguageEnglish Our reference\else Mein Zeichen\fi
+}
+
+\newcommand{\LabelRefDatum}{%
+  \ifLanguageEnglish Date\else Datum\fi
+}
+
+\newcommand{\LabelRefOrtDatum}{%
+  \ifLanguageEnglish Place, date\else Ort, Datum\fi
+}
+
+\newcommand{\LabelRefAktenzeichen}{%
+  \ifLanguageEnglish Reference no.:\else Aktenzeichen:\fi
+}
+
+\newcommand{\LabelRefBGNummer}{%
+  \ifLanguageEnglish Additional reference:\else Weitere Nummer:\fi
+}
+
+\newcommand{\LabelRefKundennummer}{%
+  \ifLanguageEnglish Customer no.:\else Kundennummer:\fi
+}
+
+\newcommand{\LabelRefIhrSchreibenVom}{%
+  \ifLanguageEnglish Your letter dated:\else Ihr Schreiben vom:\fi
+}
+
+\newcommand{\LabelRefGeschaeftszeichen}{%
+  \ifLanguageEnglish Reference code:\else Geschäftszeichen:\fi
+}
+
+\newcommand{\LabelRefBearbeitung}{%
+  \ifLanguageEnglish Processing note:\else Bearbeitung:\fi
+}
+
+% Optional formal matter block labels / Optionaler formaler Sachverhaltsblock
+\newcommand{\LabelLegalGeschaeftsnummer}{%
+  \ifLanguageEnglish Reference number (note)\else Geschäftsnummer/-zeichen (Vermerk)\fi
+}
+
+\newcommand{\LabelLegalSachverhalt}{%
+  \ifLanguageEnglish Matter\else Sachverhalt\fi
+}
+
+%---------------------------------------------------------------
+%                 Draft text / Entwurfstexte
+%---------------------------------------------------------------
+% Note label / Notizbezeichnung
+\newcommand{\LabelDraftNote}{%
+  \ifLanguageEnglish NOTE\else NOTIZ\fi
+}
+
+% Visible draft notice / Sichtbarer Entwurfshinweis
+\newcommand{\LabelDraftNotice}{%
+  \ifLanguageEnglish
+    DRAFT --- Do not send. Contains placeholders or test data.%
+  \else
+    ENTWURF --- Nicht versenden. Enthält Platzhalter oder Prüfdaten.%
+  \fi
+}
+
+%---------------------------------------------------------------
+%              Attachment presets / Anlagenvorgaben
+%---------------------------------------------------------------
+% Application attachments / Bewerbungsanlagen
+\newcommand{\LocalizedApplicationAttachments}{%
+  \ifLanguageEnglish
+    CV\\Portfolio%
+  \else
+    Lebenslauf\\Portfolio%
+  \fi
+}
+
+% Authority attachments / Behördenanlagen
+\newcommand{\LocalizedAuthorityAttachments}{%
+  \ifLanguageEnglish
+    Document A%
+  \else
+    Dokument A%
+  \fi
+}

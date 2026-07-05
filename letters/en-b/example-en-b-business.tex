@@ -1,0 +1,21 @@
+% BUSINESS GUIDE PREVIEW
+% Public v1.0 workflow: one preset, public content helpers, LetterBody.
+
+\UseLetterForm{B}
+\UsePreset{business-en}
+\UseFormTestBranding
+
+\UseRecipientAddressbook{generic-company}
+\SetLetterSubject{Example: Form B – business preset}
+\SetLetterOpening{Greeting}
+\SetLetterClosing{Sign-off}
+
+\begin{LetterBody}
+
+\textbf{What this guide shows}
+
+The visual hierarchy of \texttt{business-en} comes from four parts: an image header, contact details beside the address, a company footer on page one, and unobtrusive black links. The shared logo setting controls the image; \texttt{data/sender-data.tex} supplies the contact and footer information. Continuation pages switch to the compact follow-up layout.
+
+Start in \texttt{content.tex} with the Form B selection, recipient, and subject, then place the written content in \texttt{LetterBody}. Replace every fictional demo value before use. The result follows the toolkit's Form B orientation without claiming DIN certification.
+
+\end{LetterBody}

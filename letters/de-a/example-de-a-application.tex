@@ -1,0 +1,33 @@
+% BEDIENVORSCHAU BEWERBUNG
+% Öffentlicher Arbeitsablauf: eine Vorgabe, öffentliche Inhaltsbefehle und LetterBody.
+
+\UseLetterForm{A}
+\UsePreset{application-de}
+\UseIconstrue
+\SetColorBlue
+\UseHeaderColorBlocktrue
+\UseFooterColorBlockfalse
+
+% Diese Vorschau aktiviert die optionalen Entwurfsmarker nach der Vorgabe.
+\DraftModetrue
+
+\UseRecipientAddressbook{hr-department}
+\SetLetterSubject{Beispiel für Form A im Modus: application}
+\SetLetterOpening{Anrede}
+\SetLetterClosing{Grußformel}
+
+\begin{LetterBody}
+
+\TODO{Aufgabe ergänzen.}
+
+\PLACEHOLDER{Endgültigen Text einsetzen}
+
+\DRAFTNOTE{Text und Anlagen prüfen.}
+
+\textbf{Was dieser Guide zeigt}
+
+Mit \texttt{application-de} erhält Form A einen persönlichen Briefkopf und den vorbereiteten Anlagensatz für Bewerbungen. Diese Vorschau überschreibt die Akzentfarbe mit Blau, zeigt Symbole bei unterstützten Kontaktdaten und blendet den Farbblock im Fuß aus. Der zusätzlich eingeschaltete Entwurfsmodus macht Warnhinweis sowie Bearbeitungsmarker sichtbar.
+
+Prüfe in \texttt{content.tex} Empfänger, Betreff, Links und Anlagen; der eigentliche Text gehört in \texttt{LetterBody}. Absenderdaten bleiben in \texttt{data/sender-data.tex}. Vor dem Export muss der Entwurfsmodus ausgeschaltet werden. Dies ist eine an DIN 5008 Form A orientierte Bedienvorschau, keine DIN-Zertifizierung und keine echte Bewerbung.
+
+\end{LetterBody}

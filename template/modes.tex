@@ -1,0 +1,123 @@
+%---------------------------------------------------------------
+%             Mode presets / Vorgaben nach Dokumenttyp
+%---------------------------------------------------------------
+% Application with profile details and attachments / Bewerbung mit Profildaten und Anlagen
+\newcommand{\ModeApplication}{%
+  \UseFoldmarkstrue
+  \UseFootertrue
+  \UseFooterColorBlocktrue
+  \UseHeaderColorBlocktrue
+  \UseBusinessLegalFooterfalse
+  \UsePageTotaltrue
+  \UseContinuationHeadertrue
+  \UseGradientPaneltrue
+  \UseLogofalse
+  \UseIconsfalse
+  % Compact Form A header: name plus one contact row.
+  \UsePositionfalse
+  \UseLinkedInfalse
+  \UseWebsitefalse
+  \UseAttachmentstrue
+  \UseReferenceBlockfalse
+  \renewcommand{\AttachmentPreset}{application}%
+}
+
+% Authority letter with reference block / Behördenschreiben mit Referenzblock
+\newcommand{\ModeAuthority}{%
+  \UseFoldmarkstrue
+  \UseFootertrue
+  \UseFooterColorBlockfalse
+  \UseHeaderColorBlocktrue
+  \UseBusinessLegalFooterfalse
+  \UsePageTotaltrue
+  \UseContinuationHeadertrue
+  \UseGradientPaneltrue
+  \UseLogofalse
+  \UseIconsfalse
+  \UsePositionfalse
+  \UseLinkedInfalse
+  \UseWebsitefalse
+  \UseAttachmentstrue
+  \UseReferenceBlocktrue
+  \renewcommand{\AttachmentPreset}{authority}%
+}
+
+% Legal letter with horizontal reference block / Rechtsschreiben mit horizontalem Referenzblock
+\newcommand{\ModeLegal}{%
+  \UseFoldmarkstrue
+  \UseFootertrue
+  \UseFooterColorBlockfalse
+  \UseHeaderColorBlocktrue
+  \UseBusinessLegalFooterfalse
+  \UsePageTotaltrue
+  \UseContinuationHeadertrue
+  \UseGradientPaneltrue
+  \UseLogofalse
+  \UseIconsfalse
+  \UsePositionfalse
+  \UseLinkedInfalse
+  \UseWebsitefalse
+  \UseAttachmentstrue
+  \UseReferenceBlockfalse
+  \renewcommand{\AttachmentPreset}{authority}%
+}
+
+% Business letter with website / Geschäftsbrief mit Website
+\newcommand{\ModeBusiness}{%
+  \renewcommand{\HeaderVariant}{image}%
+  \UseFoldmarkstrue
+  \UseFootertrue
+  \UseFooterColorBlockfalse
+  \UseHeaderColorBlocktrue
+  \UseBusinessLegalFootertrue
+  \UsePageTotaltrue
+  \UseContinuationHeadertrue
+  \UseGradientPaneltrue
+  \UseLogotrue
+  \UseIconsfalse
+  \UsePositionfalse
+  \UseLinkedInfalse
+  \UseWebsitetrue
+  \UseAttachmentsfalse
+  \UseReferenceBlockfalse
+  \renewcommand{\AttachmentPreset}{business}%
+}
+
+% Reduced layout without profile elements / Reduziertes Layout ohne Profilelemente
+\newcommand{\ModeMinimal}{%
+  \UseFoldmarkstrue
+  \UseFootertrue
+  \UseFooterColorBlockfalse
+  \UseHeaderColorBlockfalse
+  \UseBusinessLegalFooterfalse
+  \UsePageTotaltrue
+  \UseContinuationHeaderfalse
+  \UseGradientPanelfalse
+  \UseLogofalse
+  \UseIconsfalse
+  \UsePositionfalse
+  \UseLinkedInfalse
+  \UseWebsitefalse
+  \UseAttachmentsfalse
+  \UseReferenceBlockfalse
+  \renewcommand{\AttachmentPreset}{minimal}%
+}
+
+%---------------------------------------------------------------
+%               Mode selection / Modusauswahl
+%---------------------------------------------------------------
+% Falls back to application mode / Fällt auf den Bewerbungsmodus zurück
+\newcommand{\ApplyDocumentMode}{%
+  \ifdefstring{\DocumentMode}{application}{\ModeApplication}{%
+    \ifdefstring{\DocumentMode}{authority}{\ModeAuthority}{%
+      \ifdefstring{\DocumentMode}{legal}{\ModeLegal}{%
+        \ifdefstring{\DocumentMode}{business}{\ModeBusiness}{%
+          \ifdefstring{\DocumentMode}{minimal}{\ModeMinimal}{\ModeApplication}%
+        }%
+      }%
+    }%
+  }%
+}
+
+% Apply default or selected mode / Standard- oder gewählten Modus anwenden
+\ApplyDocumentMode

@@ -1,0 +1,21 @@
+% BEDIENVORSCHAU MINIMALMODUS
+% Öffentlicher Arbeitsablauf: eine Vorgabe, öffentliche Inhaltsbefehle und LetterBody.
+
+\UseLetterForm{A}
+\UsePreset{minimal-de}
+\UseBackaddresstrue
+
+\UseRecipientAddressbook{customer-service}
+\SetLetterSubject{Beispiel für Form A im Modus: minimal}
+\SetLetterOpening{Anrede}
+\SetLetterClosing{Grußformel}
+
+\begin{LetterBody}
+
+\textbf{Was dieser Guide zeigt}
+
+Wenn zusätzliche Informationsbereiche unnötig wären, hält \texttt{minimal-de} die Form-A-Seite bewusst ruhig. Das schwarze Monogramm bleibt sichtbar, während dekorative Farbblöcke und die automatische Anlagenliste ausgeblendet sind. Diese Vorschau aktiviert zusätzlich die optionale Rücksendezeile über dem Anschriftblock.
+
+Lege Empfänger und Betreff in \texttt{content.tex} fest und ergänze die kurze Korrespondenz in \texttt{LetterBody}. Absenderinformationen kommen weiterhin aus \texttt{data/sender-data.tex}. Bleiben Demo-Daten unverändert, gibt das Toolkit vor der finalen Nutzung einen Hinweis im Compiler-Log aus, nicht als sichtbare Warnung im PDF. Die Vorgabe bietet einen an DIN 5008 Form A orientierten, nicht DIN-zertifizierten Ausgangspunkt und ist kein echtes Schreiben.
+
+\end{LetterBody}

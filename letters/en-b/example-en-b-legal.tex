@@ -1,0 +1,28 @@
+% LEGAL / FORMAL GUIDE PREVIEW
+% Public v1.0 workflow: one preset, public content helpers, LetterBody.
+
+\UseLetterForm{B}
+\UsePreset{legal-en}
+
+\UseRecipientManual
+\SetManualRecipient{Fictional Documentation Office\\General Correspondence\\3 Document Road\\12345 Sample City}
+\SetLetterSubject{Example: Form B – legal preset}
+\SetLetterOpening{Greeting}
+\SetLetterClosing{Sign-off}
+
+\SetRefIhrZeichen{DOK-12}
+\SetRefMeinZeichen{SAMPLE-26}
+\SetRefIhreNachrichtVom{12 May 2026}
+\SetLegalGeschaeftsnummer{V-2026-001}
+\SetLegalSachverhalt{Sample documents dated 12 May 2026}
+\SetAttachmentsCustom{Overview of sample documents\\Fictional information sheet}
+
+\begin{LetterBody}
+
+\textbf{What this guide shows}
+
+Designed for structured formal correspondence, \texttt{legal-en} uses a restrained black treatment and a horizontal reference area. The optional number and matter commands populate the outlined fields above it, while the custom attachment command supplies the list at the end. Unused fields collapse, leaving the subject directly below the reference area.
+
+Adapt the reference values and attachments only where the correspondence needs them; the prose itself remains inside \texttt{LetterBody}. The neutralized sample describes no real matter. This is a Form B oriented presentation for formal correspondence, not legal advice or a certified layout.
+
+\end{LetterBody}

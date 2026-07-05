@@ -1,0 +1,65 @@
+%=======================================================================
+%          COMPILE THIS FILE / DIESE DATEI KOMPILIEREN
+%=======================================================================
+% Use XeLaTeX. Edit content.tex for your own letter.
+% XeLaTeX verwenden. Den eigenen Brief in content.tex bearbeiten.
+%
+% Optional guide preview: keep exactly one \ContentFile line active.
+% Optionale Guide-Vorschau: genau eine \ContentFile-Zeile aktiv lassen.
+
+\def\ContentFile{content.tex}
+
+% German Form A guides / Deutsche Form-A-Guides
+% \def\ContentFile{letters/de-a/example-de-a-application.tex}
+% \def\ContentFile{letters/de-a/example-de-a-authority.tex}
+% \def\ContentFile{letters/de-a/example-de-a-business.tex}
+% \def\ContentFile{letters/de-a/example-de-a-legal.tex}
+% \def\ContentFile{letters/de-a/example-de-a-minimal.tex}
+
+% English Form B guides / Englische Form-B-Guides
+% \def\ContentFile{letters/en-b/example-en-b-application.tex}
+% \def\ContentFile{letters/en-b/example-en-b-authority.tex}
+% \def\ContentFile{letters/en-b/example-en-b-business.tex}
+% \def\ContentFile{letters/en-b/example-en-b-legal.tex}
+% \def\ContentFile{letters/en-b/example-en-b-minimal.tex}
+
+%---------------------------------------------------------------
+%              INTERNAL TEMPLATE SETUP / INTERNES TEMPLATE-SETUP
+% Order-sensitive; normally do not edit below this line.
+% Reihenfolgeabhängig; normalerweise ab hier nicht bearbeiten.
+%---------------------------------------------------------------
+
+\documentclass[
+  fontsize=11pt,
+  paper=a4,
+  parskip=half,
+  fromalign=false,
+  addrfield=true,
+  backaddress=true,
+  subject=beforeopening,
+  foldmarks=false,
+  firstfoot=false
+]{scrlttr2}
+
+\LoadLetterOption{DIN}
+
+\input{template/packages}
+\input{template/fonts}
+\input{template/settings}
+\input{template/localization}
+\input{template/modes}
+\input{data/sender-data}
+\input{data/addressbook}
+\input{template/colors}
+\input{template/layout}
+\input{template/form-a}
+\input{template/form-b}
+\input{template/helpers}
+\input{template/page-style}
+\input{template/letter-setup}
+
+\begin{document}
+
+\input{\ContentFile}
+
+\end{document}

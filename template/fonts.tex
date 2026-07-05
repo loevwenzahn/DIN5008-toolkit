@@ -1,0 +1,123 @@
+%---------------------------------------------------------------
+%                       Fonts / Schriftarten
+%---------------------------------------------------------------
+% XeLaTeX/fontspec presets; system fonts only if available / XeLaTeX/fontspec-Vorgaben; Systemschriften nur, wenn verfügbar
+
+% First available font from two candidates / Erste verfügbare Schrift aus zwei Kandidaten
+\newcommand{\UseFirstAvailableMainFontTwo}[2]{%
+  \IfFontExistsTF{#1}{%
+    \setmainfont{#1}%
+  }{%
+    \IfFontExistsTF{#2}{%
+      \setmainfont{#2}%
+    }{%
+      \PackageWarning{letter-template}{No configured fallback font found; keeping fontspec default}%
+    }%
+  }%
+}
+
+% First available font from three candidates / Erste verfügbare Schrift aus drei Kandidaten
+\newcommand{\UseFirstAvailableMainFontThree}[3]{%
+  \IfFontExistsTF{#1}{%
+    \setmainfont{#1}%
+  }{%
+    \IfFontExistsTF{#2}{%
+      \setmainfont{#2}%
+    }{%
+      \IfFontExistsTF{#3}{%
+        \setmainfont{#3}%
+      }{%
+        \PackageWarning{letter-template}{No configured fallback font found; keeping fontspec default}%
+      }%
+    }%
+  }%
+}
+
+% First available font from four candidates / Erste verfügbare Schrift aus vier Kandidaten
+\newcommand{\UseFirstAvailableMainFontFour}[4]{%
+  \IfFontExistsTF{#1}{%
+    \setmainfont{#1}%
+  }{%
+    \IfFontExistsTF{#2}{%
+      \setmainfont{#2}%
+    }{%
+      \UseFirstAvailableMainFontTwo{#3}{#4}%
+    }%
+  }%
+}
+
+% First available font from five candidates / Erste verfügbare Schrift aus fünf Kandidaten
+\newcommand{\UseFirstAvailableMainFontFive}[5]{%
+  \IfFontExistsTF{#1}{%
+    \setmainfont{#1}%
+  }{%
+    \IfFontExistsTF{#2}{%
+      \setmainfont{#2}%
+    }{%
+      \UseFirstAvailableMainFontThree{#3}{#4}{#5}%
+    }%
+  }%
+}
+
+%---------------------------------------------------------------
+%                Sans-serif presets / Serifenlose Vorgaben
+%---------------------------------------------------------------
+% TeX Gyre Heros with Arial and Latin Modern fallbacks / TeX Gyre Heros mit Arial- und Latin-Modern-Fallback
+\newcommand{\SetFontSansHeros}{%
+  \UseFirstAvailableMainFontThree{TeX Gyre Heros}{Arial}{Latin Modern Sans}%
+}
+
+% Helvetica with compatible fallbacks / Helvetica mit kompatiblen Fallbacks
+\newcommand{\SetFontHelvetica}{%
+  \UseFirstAvailableMainFontFour{Helvetica}{TeX Gyre Heros}{Arial}{Latin Modern Sans}%
+}
+
+% Arial with free fallbacks / Arial mit freien Fallbacks
+\newcommand{\SetFontArial}{%
+  \UseFirstAvailableMainFontThree{Arial}{TeX Gyre Heros}{Latin Modern Sans}%
+}
+
+% Calibri with Carlito and further fallbacks / Calibri mit Carlito und weiteren Fallbacks
+\newcommand{\SetFontCalibri}{%
+  \UseFirstAvailableMainFontFive{Calibri}{Carlito}{Arial}{TeX Gyre Heros}{Latin Modern Sans}%
+}
+
+%---------------------------------------------------------------
+%                   Serif presets / Serifenvorgaben
+%---------------------------------------------------------------
+% Pagella with Palatino and Latin Modern fallbacks / Pagella mit Palatino- und Latin-Modern-Fallback
+\newcommand{\SetFontSerifPagella}{%
+  \UseFirstAvailableMainFontThree{TeX Gyre Pagella}{Palatino Linotype}{Latin Modern Roman}%
+}
+
+% Termes with Times and Latin Modern fallbacks / Termes mit Times- und Latin-Modern-Fallback
+\newcommand{\SetFontSerifTermes}{%
+  \UseFirstAvailableMainFontThree{TeX Gyre Termes}{Times New Roman}{Latin Modern Roman}%
+}
+
+% Georgia with Pagella and Latin Modern fallbacks / Georgia mit Pagella- und Latin-Modern-Fallback
+\newcommand{\SetFontSerifGeorgia}{%
+  \UseFirstAvailableMainFontThree{Georgia}{TeX Gyre Pagella}{Latin Modern Roman}%
+}
+
+% Cambria with Termes and Latin Modern fallbacks / Cambria mit Termes- und Latin-Modern-Fallback
+\newcommand{\SetFontSerifCambria}{%
+  \UseFirstAvailableMainFontThree{Cambria}{TeX Gyre Termes}{Latin Modern Roman}%
+}
+
+% Classic serif preset / Klassische Serifenvorgabe
+\newcommand{\SetFontMixedClassic}{%
+\SetFontSerifPagella
+}
+
+%---------------------------------------------------------------
+%         Local font files / Lokale Schriftdateien
+%---------------------------------------------------------------
+% Optional custom font / Optionale eigene Schrift
+% \setmainfont{MyFont-Regular.otf}[Path=fonts/]
+
+%---------------------------------------------------------------
+%               Default font / Standardschrift
+%---------------------------------------------------------------
+% Used unless content.tex selects another preset / Verwendet, sofern content.tex keine andere Vorgabe auswählt
+\SetFontSansHeros

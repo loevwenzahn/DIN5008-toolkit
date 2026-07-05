@@ -1,0 +1,29 @@
+% APPLICATION GUIDE PREVIEW
+% Public v1.0 workflow: one preset, public content helpers, LetterBody.
+
+\UseLetterForm{B}
+\UsePreset{application-en}
+
+% This guide intentionally enables the optional draft markers after the preset.
+\DraftModetrue
+
+\UseRecipientAddressbook{hr-department}
+\SetLetterSubject{Example: Form B – application preset }
+\SetLetterOpening{Greeting}
+\SetLetterClosing{Sign-off}
+
+\begin{LetterBody}
+
+\textbf{What this guide shows}
+
+Choose \texttt{application-en} for a personal header, green accents, and the prepared application attachment set within the Form B geometry. Draft mode is switched on separately in this preview, making its warning banner and editing markers visible.
+
+\TODO{Replace with a task.}
+
+\PLACEHOLDER{Insert final text}
+
+\DRAFTNOTE{Check text and attachments.}
+
+Use \texttt{content.tex} to review the recipient, subject, links, and attachments; the actual document text belongs inside \texttt{LetterBody}. Sender details remain in \texttt{data/sender-data.tex}. Turn draft mode off before export. This is an oriented layout guide, not a DIN certification.
+
+\end{LetterBody}

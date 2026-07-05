@@ -1,0 +1,244 @@
+%=======================================================================
+%                     START HERE / HIER STARTEN
+%=======================================================================
+% FIRST LETTER IN 5 MINUTES / ERSTER BRIEF IN 5 MINUTEN
+%
+% [EDIT 1] Choose Form A or B. / Form A oder B wählen.
+% [EDIT 2] Choose ONE preset. / EINE Vorgabe wählen.
+% [EDIT 3] Enter sender data in data/sender-data.tex. / Absender eintragen.
+% [EDIT 4] Enter recipient and subject below. / Empfänger und Betreff eintragen.
+% [EDIT 5] Replace the text in LetterBody. / Text in LetterBody ersetzen.
+% [BUILD]  Compile main.tex with XeLaTeX. / main.tex mit XeLaTeX kompilieren.
+%
+% The toolkit is oriented toward DIN 5008 Form A and Form B; it is not
+% DIN-certified. / Das Toolkit ist an DIN 5008 Form A und Form B orientiert
+% und nicht DIN-zertifiziert.
+%=======================================================================
+
+%-----------------------------------------------------------------------
+% [EDIT 1] LETTER FORM / BRIEFFORM
+% Keep exactly ONE line active. Form controls geometry, not document type.
+% Genau EINE Zeile aktiv lassen. Die Form steuert die Geometrie, nicht den Typ.
+%-----------------------------------------------------------------------
+
+\UseLetterForm{A}       % compact header / kompakter Briefkopf
+% \UseLetterForm{B}     % larger header area / größerer Briefkopfbereich
+
+% Form B is the technical fallback if no form is selected. An explicit
+% selection is easier to understand and therefore recommended.
+% Form B ist der technische Rückfallwert. Eine sichtbare Auswahl ist klarer.
+
+%-----------------------------------------------------------------------
+% [EDIT 2] PRESET = DOCUMENT TYPE + LANGUAGE
+% VORGABE = DOKUMENTTYP + SPRACHE
+%
+% Keep exactly ONE preset active. -de selects German, -en selects English.
+% Genau EINE Vorgabe aktiv lassen. -de wählt Deutsch, -en wählt Englisch.
+%-----------------------------------------------------------------------
+
+% APPLICATION / BEWERBUNG
+% Personal header, draft tools, application attachments
+% Persönlicher Kopf, Entwurfshelfer, Bewerbungsanlagen
+% \UsePreset{application-de}
+% \UsePreset{application-en}
+
+% BUSINESS / GESCHÄFT
+% Logo, contact information block, company footer
+% Logo, Kontaktblock, Unternehmensfuß
+\UsePreset{business-de}
+% \UsePreset{business-en}
+
+% AUTHORITY / BEHÖRDE
+% Formal reference block, optional reference values, formal footer
+% Bezugsblock, optionale Bezugswerte, formaler Fuß
+% \UsePreset{authority-de}
+% \UsePreset{authority-en}
+
+% LEGAL / FORMAL
+% Horizontal reference area, optional number and matter fields
+% Waagerechter Bezugsbereich, optionale Nummern- und Sachverhaltsfelder
+% \UsePreset{legal-de}
+% \UsePreset{legal-en}
+
+% MINIMAL
+% Monogram, reduced styling, no automatic attachment list
+% Monogramm, reduzierte Gestaltung, keine automatische Anlagenliste
+% \UsePreset{minimal-de}
+% \UsePreset{minimal-en}
+
+%-----------------------------------------------------------------------
+% [EDIT 3] SENDER DATA / ABSENDERDATEN
+% Open data/sender-data.tex and replace its fictional demo values once.
+% Öffne data/sender-data.tex und ersetze dort einmalig die fiktiven Demo-Daten.
+% Never publish screenshots containing private data.
+% Veröffentliche keine Screenshots mit privaten Angaben.
+%-----------------------------------------------------------------------
+
+%-----------------------------------------------------------------------
+% [EDIT 4A] RECIPIENT / EMPFÄNGER
+% Keep exactly ONE method active. Direct entry is easiest for a first letter.
+% Genau EINE Methode aktiv lassen. Direkte Eingabe ist am einfachsten.
+%-----------------------------------------------------------------------
+
+\UseRecipientManual
+\SetManualRecipient{%
+Beispielorganisation\\
+Allgemeine Korrespondenz\\
+Musterweg 1\\
+12345 Beispielstadt
+}
+
+% OPTIONAL: reusable entry from data/addressbook.tex
+% OPTIONAL: wiederverwendbarer Eintrag aus data/addressbook.tex
+% First comment out \UseRecipientManual above. / Zuerst oben auskommentieren.
+% \UseRecipientAddressbook{generic-company}
+
+%-----------------------------------------------------------------------
+% [EDIT 4B] SUBJECT / BETREFF
+% The selected preset supplies a matching default salutation and closing.
+% Das gewählte Preset liefert passende Standardwerte für Anrede und Gruß.
+%-----------------------------------------------------------------------
+
+\SetLetterSubject{Betreff des eigenen Schreibens}
+
+% OPTIONAL: custom salutation and closing / eigene Anrede und Grußformel
+% \SetLetterOpening{Individuelle Anrede,}
+% \SetLetterClosing{Individuelle Grußformel}
+
+%-----------------------------------------------------------------------
+% OPTIONAL: AUTHORITY REFERENCE VALUES / BEHÖRDLICHE BEZUGSWERTE
+% Skip this block unless authority-de or authority-en is selected.
+% Diesen Block nur mit authority-de oder authority-en verwenden.
+% Empty values are omitted. / Leere Werte werden nicht ausgegeben.
+%-----------------------------------------------------------------------
+
+% \SetRefIhrZeichen{INFO-A}
+% \SetRefIhreNachrichtVom{2. Juli 2026}
+% \SetRefMeinZeichen{MUSTER-B}
+% \SetRefKundennummer{K-0000}
+% \SetRefBGNummer{N-0000}
+
+%-----------------------------------------------------------------------
+% OPTIONAL: LEGAL / FORMAL VALUES
+% Skip this block unless legal-de or legal-en is selected.
+% Diesen Block nur mit legal-de oder legal-en verwenden.
+% This is a formal correspondence layout, not legal advice.
+% Dies ist ein Layout für formale Korrespondenz, keine Rechtsberatung.
+%-----------------------------------------------------------------------
+
+% \SetRefIhrZeichen{DOK-12}
+% \SetRefMeinZeichen{MUSTER-26}
+% \SetRefIhreNachrichtVom{2. Juli 2026}
+% \SetLegalGeschaeftsnummer{V-2026-001}
+% \SetLegalSachverhalt{Prüfung neutraler Musterunterlagen}
+
+% ADVANCED formal fields / ERWEITERTE formale Felder
+% \SetRefAktenzeichen{}
+% \SetRefIhrSchreibenVom{}
+% \SetRefGeschaeftszeichen{}
+% \SetRefBearbeitung{}
+
+%-----------------------------------------------------------------------
+% [OPTIONAL] OUTPUT CONTENT / AUSGABEINHALTE
+% Presets already provide sensible defaults. Activate only what you need.
+% Presets liefern sinnvolle Standards. Aktiviere nur, was du benötigst.
+%-----------------------------------------------------------------------
+
+% ATTACHMENTS / ANLAGEN — activate at most ONE override
+% \SetAttachmentsAuto                       % preset default / Preset-Standard
+% \SetAttachmentsNone                       % hide list / Liste ausblenden
+% \SetAttachmentsCustom{Dokument A\\Dokument B}
+
+% RETURN ADDRESS LINE / RÜCKSENDEZEILE
+% \UseBackaddresstrue
+% \UseBackaddressfalse
+
+%-----------------------------------------------------------------------
+% [OPTIONAL] HEADER / BRIEFKOPF
+%-----------------------------------------------------------------------
+
+% ICONS — shown only where the selected header supports them
+% SYMBOLE — nur sichtbar, wenn der gewählte Briefkopf sie unterstützt
+% \UseIconstrue
+% \UseIconsfalse
+
+% LOGO — logo.png is the default; use a relative project path if needed
+% LOGO — logo.png ist Standard; bei Bedarf relativen Projektpfad setzen
+% \SetHeaderLogoFile{assets/my-logo.png}
+% \UseHeaderLogotrue
+% \UseHeaderLogofalse
+
+%-----------------------------------------------------------------------
+% [OPTIONAL] DRAFT REVIEW / ENTWURFSPRÜFUNG
+% Draft mode displays its warning and enables TODO helpers in LetterBody.
+% Der Entwurfsmodus zeigt eine Warnung und aktiviert Helfer in LetterBody.
+% Never send or export a final document with draft mode enabled.
+% Kein finales Dokument mit aktiviertem Entwurfsmodus versenden.
+%-----------------------------------------------------------------------
+
+% \DraftModetrue
+% \DraftModefalse
+
+%-----------------------------------------------------------------------
+% [ADVANCED] VISUAL OVERRIDES / GESTALTUNGS-OVERRIDES
+% Beginners can skip this entire block. / Anfänger überspringen diesen Block.
+%-----------------------------------------------------------------------
+
+% \SetColorGreen
+% \SetColorBlue
+% \SetColorGray
+% \SetColorPrint
+% \SetColorBlack
+%
+% Custom HEX colors: exactly six characters, without a leading #.
+% Eigene HEX-Farben: genau sechs Zeichen, ohne führendes #.
+% Place these after \UsePreset. / Nach \UsePreset einfügen.
+% \SetAccentColor{0072CE}
+% \SetColorBlockColors{EAF3FA}{D5E8F5}{BFDCEC}{9FC9E2}
+% \SetColorBlockOneColor{EAF3FA}
+% \SetColorBlockTwoColor{D5E8F5}
+% \SetColorBlockThreeColor{BFDCEC}
+% \SetColorBlockFourColor{9FC9E2}
+% \SetTextDarkColor{222222}
+% \SetTextMidColor{666666}
+% \SetTextLightColor{7B7B7B}
+% \SetLineColor{D7D7D7}
+% \SetFoldmarkColor{D3D7D1}
+% \SetNoticeBackgroundColor{EAF3FA}
+% \SetLinkColors{0072CE}{0072CE}
+% \UseHeaderColorBlocktrue
+% \UseHeaderColorBlockfalse
+% \UseFooterColorBlocktrue
+% \UseFooterColorBlockfalse
+
+% MAINTAINERS ONLY: toolkit guide/test branding, not a user logo.
+% NUR FÜR MAINTAINER: Guide-/Test-Branding, kein Nutzerlogo.
+% \UseFormTestBranding
+
+%-----------------------------------------------------------------------
+% [EDIT 5] LETTER BODY / BRIEFTEXT
+% Replace both neutral paragraphs. / Beide neutralen Absätze ersetzen.
+%-----------------------------------------------------------------------
+
+\begin{LetterBody}
+
+Dies ist ein neutraler Beispieltext für ein eigenes Schreiben. Er zeigt, an welcher Stelle der eigentliche Brieftext eingefügt wird.
+
+Ersetze diesen Text vollständig und prüfe anschließend Empfänger, Betreff, Anrede, Grußformel und mögliche Anlagen.
+
+% DRAFT HELPERS — visible only with \DraftModetrue
+% ENTWURFSHELFER — nur mit \DraftModetrue sichtbar
+% \TODO{Offenen Punkt prüfen.}
+% \PLACEHOLDER{Endgültigen Text einsetzen}
+% \DRAFTNOTE{Text und Anlagen kontrollieren.}
+
+\end{LetterBody}
+
+%=======================================================================
+%                    BEFORE SENDING / VOR DEM VERSAND
+% [ ] main.tex compiled with XeLaTeX / mit XeLaTeX kompiliert
+% [ ] Sender and recipient checked / Absender und Empfänger geprüft
+% [ ] Subject, references, attachments checked / Betreff, Bezug, Anlagen geprüft
+% [ ] Draft mode disabled / Entwurfsmodus deaktiviert
+% [ ] Final PDF reviewed / Fertiges PDF geprüft
+%=======================================================================

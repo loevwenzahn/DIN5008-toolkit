@@ -1,0 +1,25 @@
+DIN5008 Toolkit
+
+A LaTeX/XeLaTeX toolkit for DIN 5008 Form A and Form B oriented letters, including applications, business correspondence, and formal correspondence. Designed for Overleaf and local XeLaTeX builds.
+
+Copyright (c) 2026 Valentin W. Englert - https://github.com/loevwenzahn/DIN5008-toolkit
+
+This project was developed with AI-assisted support.
+Concept, structure, testing decisions, and final curation were directed manually.
+All included example data is fictional and neutralized.
+
+LaTeX source files, template logic, and toolkit structure are licensed under
+the LaTeX Project Public License, version 1.3c.
+
+This work has the LPPL maintenance status `author-maintained`.
+
+The Current Maintainer of this work is Valentin W. Englert.
+
+This work consists of the LaTeX source files, template files, example sources,
+documentation, preview material, and supporting project files contained in this
+repository, except where a file states otherwise.
+
+Documentation, logos, examples, and preview material are licensed under CC BY 4.0
+unless otherwise noted.
+
+See LICENSE and LICENSE-CC-BY-4.0 for the full license texts.

@@ -1,0 +1,27 @@
+% AUTHORITY GUIDE PREVIEW
+% Public v1.0 workflow: one preset, public content helpers, LetterBody.
+
+\UseLetterForm{B}
+\UsePreset{authority-en}
+
+\UseRecipientManual
+\SetManualRecipient{Fictional Administration Office\\General Information\\4 Example Road\\12345 Sample City}
+\SetLetterSubject{Example: Form B – authority preset}
+\SetLetterOpening{Greeting}
+\SetLetterClosing{Sign-off}
+
+\SetRefIhrZeichen{INFO-A}
+\SetRefIhreNachrichtVom{15 June 2026}
+\SetRefMeinZeichen{SAMPLE-B}
+\SetRefKundennummer{K-0000}
+\SetRefBGNummer{N-0000}
+
+\begin{LetterBody}
+
+\textbf{What this guide shows}
+
+With \texttt{authority-en}, the page gains a restrained green header, a structured reference panel on the right, and the authority attachment defaults. The commands above demonstrate how identifiers, customer numbers, and dates enter that panel. Fields left empty simply disappear.
+
+For your own document, keep the Form B selection and adjust the recipient, subject, reference values, and attachments in \texttt{content.tex}. Reserve \texttt{LetterBody} for the written content. All values shown here are fictional and neutralized; the layout is DIN 5008 Form B oriented rather than certified.
+
+\end{LetterBody}
