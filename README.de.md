@@ -66,6 +66,22 @@ Briefform wählen → Vorgabe wählen → Absender eintragen
 → LetterBody schreiben → main.tex kompilieren
 ~~~
 
+## In Overleaf öffnen
+
+Für einen schnelleren Einstieg enthält dieser Release zwei Overleaf-fertige ZIP-Pakete. Sie können direkt in Overleaf geöffnet oder manuell heruntergeladen werden.
+
+- [Englisches Paket in Overleaf öffnen](https://www.overleaf.com/docs?snip_uri=https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-en-v1.0.0.zip&main_document=main.tex)  
+  Englische Presets, englische Demo-Daten, englische Kommentare und englischer Schnellstart.  
+  [ZIP herunterladen](https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-en-v1.0.0.zip)
+
+- [Bilinguales Paket in Overleaf öffnen](https://www.overleaf.com/docs?snip_uri=https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-bilingual-v1.0.0.zip&main_document=main.tex)  
+  Englische und deutsche Kommentare, Beispiele und Dokumentation.  
+  [ZIP herunterladen](https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-bilingual-v1.0.0.zip)
+
+Nach dem Öffnen in Overleaf den Compiler auf **XeLaTeX** setzen, falls Overleaf ihn nicht automatisch auswählt, und `main.tex` kompilieren.
+
+Das vollständige Repository enthält weiterhin den kompletten Quellstand, Vorschauen, Dokumentation, Changelog und Lizenzdateien.
+
 ## Briefform, Vorgabe und Sprache wählen
 
 ### 1. Briefform

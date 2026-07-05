@@ -69,6 +69,22 @@ choose form → choose preset → enter sender → select recipient
 → set subject/references → write LetterBody → compile main.tex
 ~~~
 
+## Open in Overleaf
+
+For a faster start, this release includes two Overleaf-ready ZIP packages. You can either open them directly in Overleaf or download the ZIP files manually.
+
+- [Open English-only package in Overleaf](https://www.overleaf.com/docs?snip_uri=https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-en-v1.0.0.zip&main_document=main.tex)  
+  English presets, English demo data, English comments, and an English quickstart.  
+  [Download ZIP](https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-en-v1.0.0.zip)
+
+- [Open bilingual package in Overleaf](https://www.overleaf.com/docs?snip_uri=https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-bilingual-v1.0.0.zip&main_document=main.tex)  
+  English and German comments, examples, and documentation.  
+  [Download ZIP](https://github.com/loevwenzahn/DIN5008-toolkit/releases/download/v1.0.0/din5008-toolkit-overleaf-bilingual-v1.0.0.zip)
+
+After opening the project, set the compiler to **XeLaTeX** if Overleaf does not select it automatically, then compile `main.tex`.
+
+The full repository contains the complete source, guide previews, documentation, changelog, and license files.
+
 ## Choose form, preset, and language
 
 ### 1. Letter form / Briefform
